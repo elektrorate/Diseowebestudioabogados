@@ -14,10 +14,7 @@ export function Header() {
     {
       name: "Nosotros",
       href: "/nosotros",
-      dropdown: [
-        { name: "Quienes Somos", href: "/nosotros" },
-        { name: "Nuestro Equipo", href: "/nosotros#equipo" },
-      ],
+      dropdown: [{ name: "Quienes Somos", href: "/nosotros" }],
     },
     {
       name: "Especialidades",
