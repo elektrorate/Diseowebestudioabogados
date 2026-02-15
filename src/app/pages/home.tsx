@@ -1,25 +1,10 @@
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { 
-  Scale, 
-  Briefcase, 
-  Users, 
-  Building2, 
-  FileText, 
-  Heart, 
-  Landmark,
-  ShieldCheck,
-  UserCheck,
-  Clock,
-  Phone,
-  Mail,
-  MapPin,
-  ArrowRight
-} from "lucide-react";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { ArrowRight, Phone, Mail, MapPin, Briefcase, Users, Building2, Landmark, FileText, Scale, ShieldCheck } from "lucide-react";
 import heroBackground from "figma:asset/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
-import aboutImage from "figma:asset/e6df3d2cc7076aa7502eca9a031963f69073bb73.png";
+import aboutImage from "figma:asset/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.png";
 import processStateImage from "figma:asset/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
 import gacetaImage from "figma:asset/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
 
@@ -156,7 +141,7 @@ export function HomePage() {
       </section>
 
       {/* About Section */}
-      <section className="bg-white py-24">
+      <section className="bg-white py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative order-2 lg:order-1">
@@ -285,7 +270,7 @@ export function HomePage() {
       </section>
 
       {/* Procesos contra el Estado */}
-      <section className="relative bg-secondary text-white py-24 overflow-hidden">
+      <section className="relative bg-[#1a2e58] text-white py-24 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0 bg-[#2b3e9f]" style={{
             backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)`
