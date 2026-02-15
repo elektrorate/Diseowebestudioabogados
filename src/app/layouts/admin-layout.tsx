@@ -3,7 +3,7 @@ import { Outlet, Link, useNavigate, useLocation } from "react-router";
 import { LayoutDashboard, MessageSquare, FileText, LogOut } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import logoOnlex from "figma:asset/08486880406d58026342a3b0d089b6479280a8ee.png";
+import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
 
 export function AdminLayout() {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
-import logoOnlex from "figma:asset/08486880406d58026342a3b0d089b6479280a8ee.png";
+import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
 
 export function Footer() {
   return (

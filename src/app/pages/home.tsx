@@ -3,10 +3,10 @@ import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ArrowRight, Phone, Mail, MapPin, Briefcase, Users, Building2, Landmark, FileText, Scale, ShieldCheck } from "lucide-react";
-import heroBackground from "figma:asset/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
-import aboutImage from "figma:asset/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.png";
-import processStateImage from "figma:asset/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
-import gacetaImage from "figma:asset/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
+import heroBackground from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
+import aboutImage from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.png";
+import processStateImage from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
+import gacetaImage from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
 
 export function HomePage() {
   const areas = [

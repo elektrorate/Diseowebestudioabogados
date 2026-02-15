@@ -5,7 +5,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { toast } from "sonner";
-import logoOnlex from "figma:asset/08486880406d58026342a3b0d089b6479280a8ee.png";
+import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
 
 export function AdminLogin() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });

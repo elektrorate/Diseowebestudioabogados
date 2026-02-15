@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Menu, X, Search, Phone, Mail, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
-import logoOnlex from "figma:asset/1809b5c0508c9087f0b49b5bf7f988601290c9a8.png";
+import logoOnlex from "@/assets/1809b5c0508c9087f0b49b5bf7f988601290c9a8.png";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
