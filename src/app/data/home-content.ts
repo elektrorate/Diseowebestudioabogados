@@ -1,8 +1,3 @@
-export interface HomeStat {
-  number: string;
-  label: string;
-}
-
 export interface HomeArea {
   slug: string;
   title: string;
@@ -30,7 +25,6 @@ export interface HomeContent {
     phone: string;
     email: string;
   };
-  stats: HomeStat[];
   about: {
     badge: string;
     title: string;
@@ -101,12 +95,6 @@ export const defaultHomeContent: HomeContent = {
     phone: "(01) 234-5678",
     email: "contacto@onlex.pe",
   },
-  stats: [
-    { number: "500+", label: "Casos Exitosos" },
-    { number: "25+", label: "Anos de Experiencia" },
-    { number: "98%", label: "Satisfaccion del Cliente" },
-    { number: "50+", label: "Abogados Especialistas" },
-  ],
   about: {
     badge: "Sobre ONLEX",
     title: "Abogados profesionales para tu servicio legal complejo",

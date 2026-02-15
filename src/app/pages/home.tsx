@@ -125,19 +125,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-white py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {content.stats.map((stat) => (
-              <Card key={`${stat.number}-${stat.label}`} className="rounded-none p-6 text-center">
-                <p className="mb-2 text-3xl text-primary">{stat.number}</p>
-                <p className="text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="bg-white py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-16 lg:grid-cols-2">

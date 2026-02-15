@@ -23,11 +23,6 @@ function parseLines(value: string) {
 export function AdminHomeContent() {
   const [content, setContent] = useState<HomeContent>(getHomeContent());
 
-  const statsText = useMemo(
-    () => content.stats.map((item) => `${item.number}|${item.label}`).join("\n"),
-    [content.stats],
-  );
-
   const servicesText = useMemo(
     () =>
       content.services.areas
@@ -49,14 +44,6 @@ export function AdminHomeContent() {
         [key]: value,
       },
     }));
-  };
-
-  const handleStatsChange = (value: string) => {
-    const parsed = parseLines(value).map((line) => {
-      const [number = "", label = ""] = line.split("|").map((item) => item.trim());
-      return { number, label };
-    });
-    setContent((prev) => ({ ...prev, stats: parsed }));
   };
 
   const handleServicesChange = (value: string) => {
@@ -139,12 +126,6 @@ export function AdminHomeContent() {
           <div><Label>CTA secundario texto</Label><Input value={content.hero.ctaSecondaryLabel} onChange={(e) => updateSection("hero", "ctaSecondaryLabel", e.target.value)} /></div>
           <div><Label>CTA secundario link</Label><Input value={content.hero.ctaSecondaryHref} onChange={(e) => updateSection("hero", "ctaSecondaryHref", e.target.value)} /></div>
         </div>
-      </Card>
-
-      <Card className="space-y-4 p-6">
-        <h2 className="text-xl">Seccion Estadisticas</h2>
-        <Label>Formato: numero|label (una linea por item)</Label>
-        <Textarea rows={5} value={statsText} onChange={(e) => handleStatsChange(e.target.value)} />
       </Card>
 
       <Card className="space-y-4 p-6">
