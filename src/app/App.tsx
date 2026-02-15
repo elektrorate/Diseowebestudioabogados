@@ -5,7 +5,10 @@ import { Toaster } from "./components/ui/sonner";
 export default function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <RouterProvider
+        router={router}
+        fallbackElement={<div className="min-h-screen bg-background" />}
+      />
       <Toaster />
     </>
   );

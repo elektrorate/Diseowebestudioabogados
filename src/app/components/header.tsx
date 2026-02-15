@@ -54,6 +54,8 @@ export function Header() {
                   src={logoOnlex} 
                   alt="ONLEX - Tu solución legal en línea" 
                   className="h-14 w-auto"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               </Link>
             </div>
@@ -111,6 +113,8 @@ export function Header() {
                   src={logoOnlex} 
                   alt="ONLEX" 
                   className="h-12 w-auto"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               </Link>
             </div>
@@ -258,3 +262,4 @@ export function Header() {
     </header>
   );
 }
+

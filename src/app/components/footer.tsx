@@ -14,6 +14,8 @@ export function Footer() {
                 src={logoOnlex} 
                 alt="ONLEX - Tu solución legal en línea" 
                 className="h-18 w-auto"
+                loading="lazy"
+                decoding="async"
               />
             </Link>
             <p className="text-white/80 mb-4">
@@ -116,3 +118,4 @@ export function Footer() {
     </footer>
   );
 }
+

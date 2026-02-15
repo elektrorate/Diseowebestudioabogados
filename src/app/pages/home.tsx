@@ -3,10 +3,10 @@ import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ArrowRight, Phone, Mail, MapPin, Briefcase, Users, Building2, Landmark, FileText, Scale, ShieldCheck } from "lucide-react";
-import heroBackground from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
-import aboutImage from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.png";
-import processStateImage from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
-import gacetaImage from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
+import heroBackground from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.webp";
+import aboutImage from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.webp";
+import processStateImage from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.webp";
+import gacetaImage from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
 
 export function HomePage() {
   const areas = [
@@ -65,6 +65,8 @@ export function HomePage() {
             src={heroBackground} 
             alt="Oficina profesional de abogados" 
             className="w-full h-full object-cover"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/70" />
         </div>
@@ -149,6 +151,8 @@ export function HomePage() {
                 src={aboutImage}
                 alt="Equipo profesional de abogados"
                 className="w-full h-[550px] object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -350,6 +354,8 @@ export function HomePage() {
                 src={processStateImage}
                 alt="Justicia y derecho"
                 className="relative z-10 w-full h-[500px] object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -365,6 +371,8 @@ export function HomePage() {
                 src={gacetaImage}
                 alt="Adultos mayores"
                 className="w-full h-[500px] object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute -top-8 -right-8 w-64 h-64 border-2 border-accent/20 hidden lg:block"></div>
             </div>
