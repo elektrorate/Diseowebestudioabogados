@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router";
-import { LayoutDashboard, MessageSquare, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, MessageSquare, FileText, House, LogOut } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
@@ -25,6 +25,7 @@ export function AdminLayout() {
 
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "Inicio", href: "/admin/inicio", icon: House },
     { name: "Consultas", href: "/admin/consultas", icon: MessageSquare },
     { name: "Blog", href: "/admin/blog", icon: FileText },
   ];

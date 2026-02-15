@@ -31,8 +31,8 @@ export function AdminDashboard() {
       title: "Contenido institucional",
       description: "Actualizar secciones de Home, Nosotros y Especialidades.",
       icon: Globe,
-      status: "Proximamente",
-      action: null,
+      status: "Activo",
+      action: { label: "Gestionar inicio", href: "/admin/inicio" },
     },
     {
       title: "Navegacion y menus",

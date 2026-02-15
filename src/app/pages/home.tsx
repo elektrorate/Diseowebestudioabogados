@@ -1,8 +1,21 @@
+import { useEffect, useState } from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { ArrowRight, Phone, Mail, MapPin, Briefcase, Users, Building2, Landmark, FileText, Scale, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Phone,
+  Mail,
+  MapPin,
+  Briefcase,
+  Users,
+  Building2,
+  Landmark,
+  FileText,
+  Scale,
+  ShieldCheck,
+} from "lucide-react";
 import heroBackgroundWebp from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.webp";
 import heroBackgroundPng from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
 import aboutImageWebp from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.webp";
@@ -11,124 +24,100 @@ import processStateImageWebp from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41
 import processStateImagePng from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
 import gacetaImageWebp from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
 import gacetaImagePng from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
+import { defaultHomeContent, getHomeContent, HomeContent } from "../data/home-content";
+
+const areaIcons = {
+  laboral: Briefcase,
+  previsional: Users,
+  administrativo: Building2,
+  municipal: Landmark,
+  registral: FileText,
+  civil: Scale,
+} as const;
+
+function getAreaIcon(slug: string) {
+  return areaIcons[slug as keyof typeof areaIcons] ?? Scale;
+}
 
 export function HomePage() {
-  const areas = [
-    {
-      icon: Briefcase,
-      title: "Derecho Laboral",
-      description: "Defensa integral en conflictos laborales del sector público y privado.",
-      slug: "laboral"
-    },
-    {
-      icon: Users,
-      title: "Derecho Previsional",
-      description: "Asesoría en pensiones, ONP y sistemas de jubilación.",
-      slug: "previsional"
-    },
-    {
-      icon: Building2,
-      title: "Derecho Administrativo",
-      description: "Procesos contencioso-administrativos y defensa ante entidades públicas.",
-      slug: "administrativo"
-    },
-    {
-      icon: Landmark,
-      title: "Derecho Municipal",
-      description: "Defensa en procedimientos administrativos municipales.",
-      slug: "municipal"
-    },
-    {
-      icon: FileText,
-      title: "Derecho Registral",
-      description: "Asesoría en inscripciones y rectificaciones registrales.",
-      slug: "registral"
-    },
-    {
-      icon: Scale,
-      title: "Derecho Civil",
-      description: "Contratos, obligaciones y responsabilidad civil.",
-      slug: "civil"
-    }
-  ];
+  const [content, setContent] = useState<HomeContent>(defaultHomeContent);
 
-  const stats = [
-    { number: "500+", label: "Casos Exitosos" },
-    { number: "25+", label: "Años de Experiencia" },
-    { number: "98%", label: "Satisfacción del Cliente" },
-    { number: "50+", label: "Abogados Especialistas" }
-  ];
+  useEffect(() => {
+    const syncContent = () => setContent(getHomeContent());
+    syncContent();
+    window.addEventListener("storage", syncContent);
+    window.addEventListener("onlex_home_content_updated", syncContent);
+    return () => {
+      window.removeEventListener("storage", syncContent);
+      window.removeEventListener("onlex_home_content_updated", syncContent);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative bg-primary text-white overflow-hidden min-h-[90vh] flex items-center">
-        {/* Background Image */}
+      <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-primary text-white">
         <div className="absolute inset-0">
-          <img 
+          <img
             src={heroBackgroundPng}
             srcSet={`${heroBackgroundWebp} 1x`}
-            alt="Oficina profesional de abogados" 
-            className="w-full h-full object-cover"
+            alt="Oficina profesional de abogados"
+            className="h-full w-full object-cover"
             fetchPriority="high"
             decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/70" />
         </div>
-        
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+        <div className="relative mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="space-y-8">
-              {/* Línea decorativa superior */}
               <div className="flex items-center gap-4">
-                <div className="h-[2px] w-16 bg-accent"></div>
-                <span className="text-accent uppercase tracking-[0.2em] text-sm font-light">Estudio Jurídico</span>
+                <div className="h-[2px] w-16 bg-accent" />
+                <span className="text-sm font-light uppercase tracking-[0.2em] text-accent">{content.hero.badge}</span>
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] font-normal">
-                <span className="text-white">Defendemos tus </span>
-                <span className="text-accent italic">derechos</span>
+              <h1 className="text-5xl leading-[1.1] font-normal sm:text-6xl lg:text-7xl">
+                <span className="text-white">{content.hero.titleLine1} </span>
+                <span className="text-accent italic">{content.hero.titleAccent1}</span>
                 <br />
-                <span className="text-white">frente al </span>
-                <span className="text-accent italic">Estado</span>
+                <span className="text-white">{content.hero.titleLine2} </span>
+                <span className="text-accent italic">{content.hero.titleAccent2}</span>
                 <br />
-                <span className="text-white">y particulares</span>
+                <span className="text-white">{content.hero.titleLine3}</span>
               </h1>
 
-              <p className="text-xl text-white/80 leading-relaxed max-w-xl font-light">
-                Especialistas en derecho laboral, previsional y administrativo con más de 25 años de experiencia defendiendo tus derechos.
-              </p>
+              <p className="max-w-xl text-xl leading-relaxed font-light text-white/80">{content.hero.description}</p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button 
-                  asChild 
-                  size="lg" 
-                  className="bg-accent text-accent-foreground hover:bg-accent/90 uppercase tracking-wider text-sm font-semibold h-14 px-8 rounded-none border-2 border-accent hover:border-accent/90 transition-all"
+              <div className="flex flex-col gap-4 pt-4 sm:flex-row">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-14 rounded-none border-2 border-accent bg-accent px-8 text-sm font-semibold text-accent-foreground uppercase tracking-wider transition-all hover:border-accent/90 hover:bg-accent/90"
                 >
-                  <Link to="/contacto" className="flex items-center gap-2">
-                    Agendar consulta
-                    <ArrowRight className="w-4 h-4" />
+                  <Link to={content.hero.ctaPrimaryHref} className="flex items-center gap-2">
+                    {content.hero.ctaPrimaryLabel}
+                    <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
-                <Button 
-                  asChild 
-                  size="lg" 
-                  variant="outline" 
-                  className="bg-transparent text-white border-2 border-white hover:bg-white hover:text-primary uppercase tracking-wider text-sm font-semibold h-14 px-8 rounded-none transition-all"
+
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="h-14 rounded-none border-2 border-white bg-transparent px-8 text-sm font-semibold text-white uppercase tracking-wider transition-all hover:bg-white hover:text-primary"
                 >
-                  <Link to="/especialidades">Nuestras especialidades</Link>
+                  <Link to={content.hero.ctaSecondaryHref}>{content.hero.ctaSecondaryLabel}</Link>
                 </Button>
               </div>
 
-              {/* Contact Info */}
-              <div className="pt-8 border-t border-white/20 flex flex-wrap gap-6">
+              <div className="flex flex-wrap gap-6 border-t border-white/20 pt-8">
                 <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-accent" />
-                  <span className="text-sm text-white/90">(01) 234-5678</span>
+                  <Phone className="h-5 w-5 text-accent" />
+                  <span className="text-sm text-white/90">{content.hero.phone}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-accent" />
-                  <span className="text-sm text-white/90">contacto@onlex.pe</span>
+                  <Mail className="h-5 w-5 text-accent" />
+                  <span className="text-sm text-white/90">{content.hero.email}</span>
                 </div>
               </div>
             </div>
@@ -136,88 +125,76 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="bg-white py-16 border-b border-border">
+      <section className="border-b border-border bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              null
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {content.stats.map((stat) => (
+              <Card key={`${stat.number}-${stat.label}`} className="rounded-none p-6 text-center">
+                <p className="mb-2 text-3xl text-primary">{stat.number}</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</p>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* About Section */}
       <section className="bg-white py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative order-2 lg:order-1">
-              <ImageWithFallback 
+              <ImageWithFallback
                 src={aboutImagePng}
                 srcSet={`${aboutImageWebp} 1x`}
                 alt="Equipo profesional de abogados"
-                className="w-full h-[550px] object-cover"
+                className="h-[550px] w-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
             </div>
 
-            <div className="space-y-8 order-1 lg:order-2">
+            <div className="order-1 space-y-8 lg:order-2">
               <div>
-                <span className="text-accent uppercase tracking-[0.2em] text-sm font-light">
-                  Sobre ONLEX
-                </span>
+                <span className="text-sm font-light uppercase tracking-[0.2em] text-accent">{content.about.badge}</span>
               </div>
-              
-              <h2 className="text-4xl md:text-5xl lg:text-6xl leading-tight text-primary">
-                Abogados profesionales para tu servicio legal complejo
-              </h2>
-              
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Nos enorgullece brindar representación legal de alta calidad y orientación a nuestros clientes. 
-                Nuestro equipo está conformado por abogados experimentados y capacitados en diversas áreas del derecho.
-              </p>
+
+              <h2 className="text-4xl leading-tight text-primary md:text-5xl lg:text-6xl">{content.about.title}</h2>
+
+              <p className="text-lg leading-relaxed text-muted-foreground">{content.about.description}</p>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center border border-accent/30 bg-accent/5">
-                    <Scale className="w-7 h-7 text-accent" />
+                  <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center border border-accent/30 bg-accent/5">
+                    <Scale className="h-7 w-7 text-accent" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-xl mb-2 text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
-                      Consultas Gratuitas
+                    <h4 className="mb-2 text-xl text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
+                      {content.about.feature1Title}
                     </h4>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Muchos abogados ofrecen consultas gratuitas como una forma de atraer clientes 
-                      potenciales y brindar una oportunidad de evaluación inicial.
-                    </p>
+                    <p className="leading-relaxed text-muted-foreground">{content.about.feature1Description}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center border border-accent/30 bg-accent/5">
-                    <ShieldCheck className="w-7 h-7 text-accent" />
+                  <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center border border-accent/30 bg-accent/5">
+                    <ShieldCheck className="h-7 w-7 text-accent" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-xl mb-2 text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
-                      Asesoramiento y Consejería Legal
+                    <h4 className="mb-2 text-xl text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
+                      {content.about.feature2Title}
                     </h4>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Los abogados realizan investigaciones exhaustivas sobre leyes, regulaciones 
-                      y precedentes relevantes para construir casos sólidos.
-                    </p>
+                    <p className="leading-relaxed text-muted-foreground">{content.about.feature2Description}</p>
                   </div>
                 </div>
               </div>
 
-              <Button 
-                asChild 
-                size="lg" 
-                className="bg-primary text-white hover:bg-primary/90 uppercase tracking-wider text-sm font-semibold h-14 px-10 rounded-none mt-8"
+              <Button
+                asChild
+                size="lg"
+                className="mt-8 h-14 rounded-none bg-primary px-10 text-sm font-semibold text-white uppercase tracking-wider hover:bg-primary/90"
               >
-                <Link to="/nosotros" className="flex items-center gap-2">
-                  Leer más
-                  <ArrowRight className="w-4 h-4" />
+                <Link to={content.about.ctaHref} className="flex items-center gap-2">
+                  {content.about.ctaLabel}
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -225,51 +202,43 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Áreas de Práctica */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="flex items-center gap-4 justify-center mb-6">
-              <div className="h-[2px] w-16 bg-accent"></div>
-              <span className="text-accent uppercase tracking-[0.2em] text-sm font-light">Nuestros Servicios</span>
-              <div className="h-[2px] w-16 bg-accent"></div>
+          <div className="mx-auto mb-16 max-w-3xl text-center">
+            <div className="mb-6 flex items-center justify-center gap-4">
+              <div className="h-[2px] w-16 bg-accent" />
+              <span className="text-sm font-light uppercase tracking-[0.2em] text-accent">{content.services.badge}</span>
+              <div className="h-[2px] w-16 bg-accent" />
             </div>
-            
-            <h2 className="text-4xl md:text-5xl mb-6">
-              Áreas de <span className="text-accent italic">Práctica</span>
+
+            <h2 className="mb-6 text-4xl md:text-5xl">
+              {content.services.titlePrefix} <span className="text-accent italic">{content.services.titleAccent}</span>
             </h2>
-            
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Brindamos asesoría legal integral en diversas especialidades del derecho, 
-              con énfasis en la defensa de tus derechos frente al Estado.
-            </p>
+
+            <p className="text-lg leading-relaxed text-muted-foreground">{content.services.description}</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {areas.map((area, index) => {
-              const Icon = area.icon;
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {content.services.areas.map((area) => {
+              const Icon = getAreaIcon(area.slug);
               return (
-                <Card 
-                  key={index} 
-                  className="group relative overflow-hidden hover:shadow-xl transition-all duration-300 border-2 border-border hover:border-accent rounded-none"
+                <Card
+                  key={`${area.slug}-${area.title}`}
+                  className="group relative overflow-hidden rounded-none border-2 border-border transition-all duration-300 hover:border-accent hover:shadow-xl"
                 >
-                  <div className="absolute top-0 left-0 w-full h-1 bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-                  
+                  <div className="absolute top-0 left-0 h-1 w-full origin-left scale-x-0 bg-accent transition-transform duration-300 group-hover:scale-x-100" />
+
                   <div className="p-8">
-                    <Icon className="w-12 h-12 text-primary mb-6 group-hover:text-accent transition-colors" />
-                    
-                    <h3 className="text-xl mb-3">{area.title}</h3>
-                    
-                    <p className="text-muted-foreground mb-6 leading-relaxed">
-                      {area.description}
-                    </p>
-                    
-                    <Link 
+                    <Icon className="mb-6 h-12 w-12 text-primary transition-colors group-hover:text-accent" />
+                    <h3 className="mb-3 text-xl">{area.title}</h3>
+                    <p className="mb-6 leading-relaxed text-muted-foreground">{area.description}</p>
+
+                    <Link
                       to={`/especialidades/${area.slug}`}
-                      className="inline-flex items-center gap-2 text-sm uppercase tracking-wider text-primary group-hover:text-accent transition-colors font-semibold"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-primary uppercase tracking-wider transition-colors group-hover:text-accent"
                     >
-                      Conocer más
-                      <ArrowRight className="w-4 h-4" />
+                      Conocer mas
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
                 </Card>
@@ -279,78 +248,54 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Procesos contra el Estado */}
-      <section className="relative bg-[#1a2e58] text-white py-24 overflow-hidden">
+      <section className="relative overflow-hidden bg-[#1a2e58] py-24 text-white">
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0 bg-[#2b3e9f]" style={{
-            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)`
-          }}></div>
+          <div
+            className="absolute inset-0 bg-[#2b3e9f]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)",
+            }}
+          />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8 order-2 lg:order-1">
+          <div className="grid items-center gap-16 lg:grid-cols-2">
+            <div className="order-2 space-y-8 lg:order-1">
               <div className="flex items-center gap-4">
-                <div className="h-[2px] w-16 bg-accent"></div>
-                <span className="text-accent uppercase tracking-[0.2em] text-sm font-light">Nuestra Especialidad</span>
+                <div className="h-[2px] w-16 bg-accent" />
+                <span className="text-sm font-light uppercase tracking-[0.2em] text-accent">{content.processState.badge}</span>
               </div>
 
-              <h2 className="text-4xl md:text-5xl leading-tight">
-                Expertos en <span className="text-accent italic">procesos</span> contra el Estado
+              <h2 className="text-4xl leading-tight md:text-5xl">
+                {content.processState.titlePrefix} <span className="text-accent italic">{content.processState.titleAccent}</span>{" "}
+                {content.processState.titleSuffix}
               </h2>
-              
-              <p className="text-xl text-white/80 leading-relaxed">
-                Defendemos tus derechos frente a entidades públicas, ONP, gobiernos locales 
-                y demás instituciones del Estado peruano.
-              </p>
-              
+
+              <p className="text-xl leading-relaxed text-white/80">{content.processState.description}</p>
+
               <div className="space-y-4 pt-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0 bg-accent/10 flex items-center justify-center border-2 border-accent">
-                    <ShieldCheck className="w-6 h-6 text-accent" />
+                {content.processState.bullets.map((bullet) => (
+                  <div key={bullet.title} className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border-2 border-accent bg-accent/10">
+                      <ShieldCheck className="h-6 w-6 text-accent" />
+                    </div>
+                    <div>
+                      <h4 className="mb-1 text-lg">{bullet.title}</h4>
+                      <p className="text-sm leading-relaxed text-white/70">{bullet.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-lg mb-1">Contencioso Administrativo</h4>
-                    <p className="text-white/70 text-sm leading-relaxed">
-                      Impugnación de actos y resoluciones administrativas ante el Poder Judicial.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0 bg-accent/10 flex items-center justify-center border-2 border-accent">
-                    <ShieldCheck className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg mb-1">Nulidad de Actos Administrativos</h4>
-                    <p className="text-white/70 text-sm leading-relaxed">
-                      Defensa ante decisiones arbitrarias de entidades públicas.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 flex-shrink-0 bg-accent/10 flex items-center justify-center border-2 border-accent">
-                    <ShieldCheck className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg mb-1">Ejecución de Sentencias</h4>
-                    <p className="text-white/70 text-sm leading-relaxed">
-                      Garantizamos el cumplimiento efectivo de las sentencias judiciales.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
-
             </div>
-            
+
             <div className="relative order-1 lg:order-2">
-              <div className="absolute -bottom-8 -left-8 w-64 h-64 border-2 border-accent/30 hidden lg:block"></div>
-              <ImageWithFallback 
+              <div className="absolute -bottom-8 -left-8 hidden h-64 w-64 border-2 border-accent/30 lg:block" />
+              <ImageWithFallback
                 src={processStateImagePng}
                 srcSet={`${processStateImageWebp} 1x`}
                 alt="Justicia y derecho"
-                className="relative z-10 w-full h-[500px] object-cover"
+                className="relative z-10 h-[500px] w-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
@@ -359,52 +304,44 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* La Gaceta del Jubilado */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative order-2 lg:order-1">
-              <ImageWithFallback 
+              <ImageWithFallback
                 src={gacetaImagePng}
                 srcSet={`${gacetaImageWebp} 1x`}
                 alt="Adultos mayores"
-                className="w-full h-[500px] object-cover"
+                className="h-[500px] w-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
-              <div className="absolute -top-8 -right-8 w-64 h-64 border-2 border-accent/20 hidden lg:block"></div>
+              <div className="absolute -top-8 -right-8 hidden h-64 w-64 border-2 border-accent/20 lg:block" />
             </div>
 
-            <div className="space-y-6 order-1 lg:order-2">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-[2px] w-16 bg-accent"></div>
-                <span className="text-accent uppercase tracking-[0.2em] text-sm font-light">Responsabilidad Social</span>
+            <div className="order-1 space-y-6 lg:order-2">
+              <div className="mb-6 flex items-center gap-4">
+                <div className="h-[2px] w-16 bg-accent" />
+                <span className="text-sm font-light uppercase tracking-[0.2em] text-accent">{content.gaceta.badge}</span>
               </div>
-              
-              <h2 className="text-4xl md:text-5xl leading-tight">
-                La <span className="text-accent italic">Gaceta</span> del Jubilado
+
+              <h2 className="text-4xl leading-tight md:text-5xl">
+                {content.gaceta.titlePrefix} <span className="text-accent italic">{content.gaceta.titleAccent}</span>{" "}
+                {content.gaceta.titleSuffix}
               </h2>
-              
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Un espacio dedicado a brindar información clara y accesible sobre derechos 
-                previsionales, laborales y administrativos. Nuestro compromiso es educar y 
-                empoderar a pensionistas y adultos mayores con conocimiento legal práctico.
-              </p>
 
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Publicamos artículos, análisis de jurisprudencia y guías prácticas para que 
-                conozcas y ejerzas tus derechos de manera informada.
-              </p>
+              <p className="text-lg leading-relaxed text-muted-foreground">{content.gaceta.description1}</p>
+              <p className="text-lg leading-relaxed text-muted-foreground">{content.gaceta.description2}</p>
 
-              <Button 
-                asChild 
-                variant="outline" 
-                size="lg" 
-                className="uppercase tracking-wider text-sm font-semibold h-14 px-8 rounded-none border-2 border-primary hover:bg-primary hover:text-white transition-all mt-6"
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="mt-6 h-14 rounded-none border-2 border-primary px-8 text-sm font-semibold uppercase tracking-wider transition-all hover:bg-primary hover:text-white"
               >
-                <Link to="/blog" className="flex items-center gap-2">
-                  Visitar el blog
-                  <ArrowRight className="w-4 h-4" />
+                <Link to={content.gaceta.ctaHref} className="flex items-center gap-2">
+                  {content.gaceta.ctaLabel}
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -412,67 +349,66 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="relative bg-primary text-white py-24 overflow-hidden">
+      <section className="relative overflow-hidden bg-primary py-24 text-white">
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)`
-          }}></div>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)",
+            }}
+          />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center space-y-10">
-          <div className="flex items-center gap-4 justify-center">
-            <div className="h-[2px] w-16 bg-accent"></div>
-            <span className="text-accent uppercase tracking-[0.2em] text-sm font-light">Contáctanos</span>
-            <div className="h-[2px] w-16 bg-accent"></div>
+        <div className="relative mx-auto max-w-5xl space-y-10 px-4 text-center sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-[2px] w-16 bg-accent" />
+            <span className="text-sm font-light uppercase tracking-[0.2em] text-accent">{content.finalCta.badge}</span>
+            <div className="h-[2px] w-16 bg-accent" />
           </div>
 
-          <h2 className="text-4xl sm:text-5xl md:text-6xl leading-tight">
-            Tu derecho no se pierde.
+          <h2 className="text-4xl leading-tight sm:text-5xl md:text-6xl">
+            {content.finalCta.titleLine1}
             <br />
-            <span className="text-accent italic">Se defiende.</span>
+            <span className="text-accent italic">{content.finalCta.titleAccent}</span>
           </h2>
 
-          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            Agenda tu consulta con nuestros especialistas y recibe asesoría legal 
-            personalizada para tu caso.
-          </p>
+          <p className="mx-auto max-w-2xl text-xl leading-relaxed text-white/80">{content.finalCta.description}</p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button 
-              asChild 
-              size="lg" 
-              className="bg-accent text-accent-foreground hover:bg-accent/90 uppercase tracking-wider text-sm font-semibold h-14 px-10 rounded-none border-2 border-accent hover:border-accent/90 transition-all"
+          <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
+            <Button
+              asChild
+              size="lg"
+              className="h-14 rounded-none border-2 border-accent bg-accent px-10 text-sm font-semibold text-accent-foreground uppercase tracking-wider transition-all hover:border-accent/90 hover:bg-accent/90"
             >
-              <Link to="/contacto" className="flex items-center gap-2">
-                Agendar asesoría legal
-                <ArrowRight className="w-4 h-4" />
+              <Link to={content.finalCta.ctaPrimaryHref} className="flex items-center gap-2">
+                {content.finalCta.ctaPrimaryLabel}
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
 
-            <Button 
-              asChild 
-              size="lg" 
-              variant="outline" 
-              className="bg-transparent text-white border-2 border-white hover:bg-white hover:text-primary uppercase tracking-wider text-sm font-semibold h-14 px-10 rounded-none transition-all"
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-14 rounded-none border-2 border-white bg-transparent px-10 text-sm font-semibold text-white uppercase tracking-wider transition-all hover:bg-white hover:text-primary"
             >
-              <Link to="/nosotros">Conocer el estudio</Link>
+              <Link to={content.finalCta.ctaSecondaryHref}>{content.finalCta.ctaSecondaryLabel}</Link>
             </Button>
           </div>
 
-          {/* Contact Info */}
-          <div className="flex flex-wrap gap-8 justify-center pt-8 border-t border-white/20">
+          <div className="flex flex-wrap justify-center gap-8 border-t border-white/20 pt-8">
             <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-accent" />
-              <span className="text-sm text-white/90">Lima, Perú</span>
+              <MapPin className="h-5 w-5 text-accent" />
+              <span className="text-sm text-white/90">{content.finalCta.location}</span>
             </div>
             <div className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-accent" />
-              <span className="text-sm text-white/90">(01) 234-5678</span>
+              <Phone className="h-5 w-5 text-accent" />
+              <span className="text-sm text-white/90">{content.finalCta.phone}</span>
             </div>
             <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-accent" />
-              <span className="text-sm text-white/90">contacto@onlex.pe</span>
+              <Mail className="h-5 w-5 text-accent" />
+              <span className="text-sm text-white/90">{content.finalCta.email}</span>
             </div>
           </div>
         </div>
