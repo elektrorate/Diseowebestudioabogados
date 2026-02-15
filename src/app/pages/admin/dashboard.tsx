@@ -1,130 +1,100 @@
+import { Link } from "react-router";
 import { Card } from "../../components/ui/card";
-import { MessageSquare, FileText, Users, TrendingUp } from "lucide-react";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import {
+  MessageSquare,
+  FileText,
+  LayoutDashboard,
+  Settings,
+  Globe,
+  Phone,
+} from "lucide-react";
 
 export function AdminDashboard() {
-  const stats = [
+  const categories = [
     {
+      title: "Consultas de clientes",
+      description: "Revisar, clasificar y dar seguimiento a formularios recibidos.",
       icon: MessageSquare,
-      title: "Consultas pendientes",
-      value: "12",
-      change: "+3 hoy",
-      color: "text-amber-600"
+      status: "Activo",
+      action: { label: "Gestionar consultas", href: "/admin/consultas" },
     },
     {
-      icon: Users,
-      title: "Consultas totales",
-      value: "156",
-      change: "+23 este mes",
-      color: "text-blue-600"
-    },
-    {
+      title: "Contenido del blog",
+      description: "Crear, editar y publicar articulos de La Gaceta del Jubilado.",
       icon: FileText,
-      title: "Artículos publicados",
-      value: "4",
-      change: "Activos",
-      color: "text-green-600"
+      status: "Activo",
+      action: { label: "Gestionar blog", href: "/admin/blog" },
     },
     {
-      icon: TrendingUp,
-      title: "Visitas al sitio",
-      value: "2,341",
-      change: "+12% vs mes anterior",
-      color: "text-purple-600"
-    }
-  ];
-
-  const recentConsultas = [
-    { id: 1, nombre: "María González", asunto: "Pensión ONP denegada", fecha: "2026-02-15", estado: "Pendiente" },
-    { id: 2, nombre: "Juan Pérez", asunto: "Despido injustificado", fecha: "2026-02-14", estado: "Pendiente" },
-    { id: 3, nombre: "Ana Rodríguez", asunto: "Proceso administrativo", fecha: "2026-02-14", estado: "Contactado" },
+      title: "Contenido institucional",
+      description: "Actualizar secciones de Home, Nosotros y Especialidades.",
+      icon: Globe,
+      status: "Proximamente",
+      action: null,
+    },
+    {
+      title: "Navegacion y menus",
+      description: "Administrar enlaces del header, footer y accesos rapidos.",
+      icon: LayoutDashboard,
+      status: "Proximamente",
+      action: null,
+    },
+    {
+      title: "Canales de contacto",
+      description: "Gestionar telefonos, correos y datos visibles del estudio.",
+      icon: Phone,
+      status: "Proximamente",
+      action: null,
+    },
+    {
+      title: "Configuracion general",
+      description: "Preferencias de sistema y parametros administrativos.",
+      icon: Settings,
+      status: "Proximamente",
+      action: null,
+    },
   ];
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl mb-2">Dashboard</h1>
+        <h1 className="mb-2 text-3xl">Panel de Administracion</h1>
         <p className="text-muted-foreground">
-          Bienvenido al panel de administración de ONLEX
+          Funcionalidades de administracion del sitio ordenadas por categorias.
         </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {categories.map((category) => {
+          const Icon = category.icon;
+          const isActive = category.status === "Activo";
+
           return (
-            <Card key={index} className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`p-3 rounded-lg bg-muted ${stat.color}`}>
-                  <Icon className="w-6 h-6" />
+            <Card key={category.title} className="flex h-full flex-col p-6">
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div className="rounded-lg bg-muted p-3 text-primary">
+                  <Icon className="h-5 w-5" />
                 </div>
+                <Badge variant={isActive ? "default" : "secondary"}>{category.status}</Badge>
               </div>
-              <p className="text-muted-foreground text-sm mb-1">{stat.title}</p>
-              <p className="text-3xl mb-1">{stat.value}</p>
-              <p className="text-sm text-muted-foreground">{stat.change}</p>
+
+              <h2 className="mb-2 text-xl">{category.title}</h2>
+              <p className="mb-6 flex-1 text-sm text-muted-foreground">{category.description}</p>
+
+              {category.action ? (
+                <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+                  <Link to={category.action.href}>{category.action.label}</Link>
+                </Button>
+              ) : (
+                <Button variant="outline" disabled>
+                  Disponible pronto
+                </Button>
+              )}
             </Card>
           );
         })}
-      </div>
-
-      {/* Recent Consultas */}
-      <Card className="p-6">
-        <h2 className="text-xl mb-4">Consultas recientes</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left py-3 px-4">Nombre</th>
-                <th className="text-left py-3 px-4">Asunto</th>
-                <th className="text-left py-3 px-4">Fecha</th>
-                <th className="text-left py-3 px-4">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentConsultas.map((consulta) => (
-                <tr key={consulta.id} className="border-b border-border hover:bg-muted/50">
-                  <td className="py-3 px-4">{consulta.nombre}</td>
-                  <td className="py-3 px-4">{consulta.asunto}</td>
-                  <td className="py-3 px-4 text-muted-foreground">
-                    {new Date(consulta.fecha).toLocaleDateString('es-PE')}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className={`inline-block px-2 py-1 text-xs rounded ${
-                      consulta.estado === "Pendiente" 
-                        ? "bg-amber-100 text-amber-800" 
-                        : "bg-green-100 text-green-800"
-                    }`}>
-                      {consulta.estado}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* Quick Actions */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="p-6 bg-primary text-white">
-          <h3 className="text-xl mb-2">¿Necesitas ayuda?</h3>
-          <p className="text-white/80 mb-4">
-            Accede a la documentación o contacta al soporte técnico.
-          </p>
-          <button className="text-accent hover:underline">
-            Ver documentación →
-          </button>
-        </Card>
-
-        <Card className="p-6 bg-accent text-accent-foreground">
-          <h3 className="text-xl mb-2">Sitio web público</h3>
-          <p className="opacity-90 mb-4">
-            Visita el sitio web para ver cómo lo ven tus clientes.
-          </p>
-          <a href="/" className="text-primary hover:underline">
-            Ir al sitio web →
-          </a>
-        </Card>
       </div>
     </div>
   );

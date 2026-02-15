@@ -117,6 +117,14 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-white/10 text-center text-white/60">
           <p>&copy; {new Date().getFullYear()} ONLEX. Todos los derechos reservados.</p>
+          <p className="mt-3">
+            <Link
+              to="/admin/acceso"
+              className="text-[11px] tracking-[0.12em] uppercase text-white/35 transition-colors hover:text-white/60"
+            >
+              admin
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

@@ -70,6 +70,13 @@ export const router = createBrowserRouter([
     path: "/admin",
     children: [
       {
+        path: "acceso",
+        lazy: async () => {
+          const mod = await import("./pages/admin/access");
+          return { Component: mod.AdminAccess };
+        },
+      },
+      {
         path: "login",
         lazy: async () => {
           const mod = await import("./pages/admin/login");
