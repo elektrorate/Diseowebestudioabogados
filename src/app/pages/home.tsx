@@ -3,10 +3,14 @@ import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ArrowRight, Phone, Mail, MapPin, Briefcase, Users, Building2, Landmark, FileText, Scale, ShieldCheck } from "lucide-react";
-import heroBackground from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.webp";
-import aboutImage from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.webp";
-import processStateImage from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.webp";
-import gacetaImage from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
+import heroBackgroundWebp from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.webp";
+import heroBackgroundPng from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
+import aboutImageWebp from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.webp";
+import aboutImagePng from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.png";
+import processStateImageWebp from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.webp";
+import processStateImagePng from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
+import gacetaImageWebp from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
+import gacetaImagePng from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
 
 export function HomePage() {
   const areas = [
@@ -62,7 +66,8 @@ export function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
-            src={heroBackground} 
+            src={heroBackgroundPng}
+            srcSet={`${heroBackgroundWebp} 1x`}
             alt="Oficina profesional de abogados" 
             className="w-full h-full object-cover"
             fetchPriority="high"
@@ -148,7 +153,8 @@ export function HomePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative order-2 lg:order-1">
               <ImageWithFallback 
-                src={aboutImage}
+                src={aboutImagePng}
+                srcSet={`${aboutImageWebp} 1x`}
                 alt="Equipo profesional de abogados"
                 className="w-full h-[550px] object-cover"
                 loading="lazy"
@@ -351,7 +357,8 @@ export function HomePage() {
             <div className="relative order-1 lg:order-2">
               <div className="absolute -bottom-8 -left-8 w-64 h-64 border-2 border-accent/30 hidden lg:block"></div>
               <ImageWithFallback 
-                src={processStateImage}
+                src={processStateImagePng}
+                srcSet={`${processStateImageWebp} 1x`}
                 alt="Justicia y derecho"
                 className="relative z-10 w-full h-[500px] object-cover"
                 loading="lazy"
@@ -368,7 +375,8 @@ export function HomePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative order-2 lg:order-1">
               <ImageWithFallback 
-                src={gacetaImage}
+                src={gacetaImagePng}
+                srcSet={`${gacetaImageWebp} 1x`}
                 alt="Adultos mayores"
                 className="w-full h-[500px] object-cover"
                 loading="lazy"
