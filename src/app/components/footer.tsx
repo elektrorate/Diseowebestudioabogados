@@ -3,6 +3,10 @@ import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react
 import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
 
 export function Footer() {
+  const handleNavigateTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
+
   return (
     <footer className="bg-primary text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
@@ -39,22 +43,22 @@ export function Footer() {
             <h3 className="mb-4">Enlaces rápidos</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Inicio
                 </Link>
               </li>
               <li>
-                <Link to="/nosotros" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/nosotros" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Nosotros
                 </Link>
               </li>
               <li>
-                <Link to="/especialidades" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/especialidades" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Especialidades
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/blog" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Blog
                 </Link>
               </li>
@@ -66,22 +70,22 @@ export function Footer() {
             <h3 className="mb-4">Especialidades</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/especialidades/laboral" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/especialidades/laboral" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Derecho Laboral
                 </Link>
               </li>
               <li>
-                <Link to="/especialidades/previsional" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/especialidades/previsional" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Derecho Previsional
                 </Link>
               </li>
               <li>
-                <Link to="/especialidades/administrativo" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/especialidades/administrativo" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Derecho Administrativo
                 </Link>
               </li>
               <li>
-                <Link to="/procesos-estado" className="text-white/80 hover:text-accent transition-colors">
+                <Link to="/procesos-estado" onClick={handleNavigateTop} className="text-white/80 hover:text-accent transition-colors">
                   Procesos contra el Estado
                 </Link>
               </li>

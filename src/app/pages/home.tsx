@@ -342,16 +342,6 @@ export function HomePage() {
                 </div>
               </div>
 
-              <Button 
-                asChild 
-                size="lg" 
-                className="bg-accent text-accent-foreground hover:bg-accent/90 uppercase tracking-wider text-sm font-semibold h-14 px-8 rounded-none border-2 border-accent hover:border-accent/90 transition-all mt-8"
-              >
-                <Link to="/procesos-estado" className="flex items-center gap-2">
-                  Consulta tu caso
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button>
             </div>
             
             <div className="relative order-1 lg:order-2">

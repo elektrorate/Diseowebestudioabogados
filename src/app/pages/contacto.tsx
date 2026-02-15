@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -8,6 +9,7 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 export function ContactoPage() {
+  const location = useLocation();
   const [formData, setFormData] = useState({
     nombre: "",
     telefono: "",
@@ -48,6 +50,17 @@ export function ContactoPage() {
     });
   };
 
+  useEffect(() => {
+    if (location.hash !== "#consulta") return;
+
+    const target = document.getElementById("consulta");
+    if (!target) return;
+
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [location.hash]);
+
   return (
     <div className="flex flex-col">
       {/* Hero */}
@@ -66,7 +79,7 @@ export function ContactoPage() {
       </section>
 
       {/* Formulario y datos de contacto */}
-      <section className="py-16">
+      <section id="consulta" className="scroll-mt-44 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Formulario */}

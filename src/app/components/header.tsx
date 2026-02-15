@@ -156,7 +156,7 @@ export function Header() {
                 asChild
                 className="h-[60px] min-w-[226px] rounded-none bg-accent px-8 text-[13px] font-semibold uppercase tracking-[0.09em] text-accent-foreground hover:bg-accent/90"
               >
-                <Link to="/contacto">Consulta Gratuita</Link>
+                <Link to="/contacto#consulta">Consulta Gratuita</Link>
               </Button>
 
               <button className="p-2 text-foreground/70 transition-colors hover:text-accent" aria-label="Abrir menu secundario">
@@ -227,7 +227,7 @@ export function Header() {
 
                 <div className="px-3 pt-4">
                   <Button asChild className="w-full bg-accent hover:bg-accent/90">
-                    <Link to="/contacto" onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/contacto#consulta" onClick={() => setIsMenuOpen(false)}>
                       Consulta Gratuita
                     </Link>
                   </Button>
