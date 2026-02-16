@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -12,9 +12,22 @@ import {
   saveContactoContent,
 } from "../../data/contacto-content";
 import { toast } from "sonner";
+import { CONTENT_UPDATED_EVENT } from "../../data/content-store";
 
 export function AdminContactoContent() {
   const [content, setContent] = useState<ContactoContent>(getContactoContent());
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setContent(getContactoContent());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   const update = <K extends keyof ContactoContent>(section: K, key: keyof ContactoContent[K], value: string) => {
     setContent((prev) => ({ ...prev, [section]: { ...prev[section], [key]: value } }));
@@ -33,15 +46,29 @@ export function AdminContactoContent() {
     }));
   };
 
-  const save = () => {
-    saveContactoContent(content);
-    toast.success("Contenido de Contacto actualizado");
+  const save = async () => {
+    setIsSaving(true);
+    try {
+      await saveContactoContent(content);
+      toast.success("Contenido de Contacto actualizado");
+    } catch {
+      toast.error("No se pudo guardar el contenido de Contacto");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const reset = () => {
-    resetContactoContent();
-    setContent(defaultContactoContent);
-    toast.success("Contenido de Contacto restaurado");
+  const reset = async () => {
+    setIsSaving(true);
+    try {
+      await resetContactoContent();
+      setContent(defaultContactoContent);
+      toast.success("Contenido de Contacto restaurado");
+    } catch {
+      toast.error("No se pudo restaurar el contenido de Contacto");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -52,8 +79,8 @@ export function AdminContactoContent() {
           <p className="text-muted-foreground">Configura hero, formulario y canales de contacto por secciones.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={reset}>Restaurar por defecto</Button>
-          <Button onClick={save} className="bg-accent text-accent-foreground hover:bg-accent/90">Guardar cambios</Button>
+          <Button variant="outline" onClick={() => void reset()} disabled={isSaving}>Restaurar por defecto</Button>
+          <Button onClick={() => void save()} disabled={isSaving} className="bg-accent text-accent-foreground hover:bg-accent/90">{isSaving ? "Guardando..." : "Guardar cambios"}</Button>
         </div>
       </div>
 

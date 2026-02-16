@@ -1,16 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Calendar, Clock, Tag } from "lucide-react";
-import { blogPosts, categories } from "../data/blog";
+import { BlogPost, categories } from "../data/blog";
+import { getBlogPosts } from "../data/blog-store";
+import { CONTENT_UPDATED_EVENT } from "../data/content-store";
 
 export function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const sync = () => setPosts(getBlogPosts());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   const filteredPosts = selectedCategory === "Todos"
-    ? blogPosts.filter(post => post.published)
-    : blogPosts.filter(post => post.published && post.category === selectedCategory);
+    ? posts.filter(post => post.published)
+    : posts.filter(post => post.published && post.category === selectedCategory);
 
   return (
     <div className="flex flex-col">

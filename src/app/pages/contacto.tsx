@@ -13,6 +13,7 @@ import {
   getContactoContent,
 } from "../data/contacto-content";
 import { CONTENT_UPDATED_EVENT } from "../data/content-store";
+import { createConsulta } from "../data/consultas-store";
 
 export function ContactoPage() {
   const location = useLocation();
@@ -42,19 +43,24 @@ export function ContactoPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      await createConsulta(formData);
+      toast.success("Consulta enviada exitosamente", {
+        description: "Nos pondremos en contacto contigo en breve.",
+      });
 
-    toast.success("Consulta enviada exitosamente", {
-      description: "Nos pondremos en contacto contigo en breve.",
-    });
-
-    setFormData({
-      nombre: "",
-      telefono: "",
-      email: "",
-      asunto: "",
-      mensaje: "",
-    });
+      setFormData({
+        nombre: "",
+        telefono: "",
+        email: "",
+        asunto: "",
+        mensaje: "",
+      });
+    } catch {
+      toast.error("No se pudo enviar la consulta", {
+        description: "Intenta nuevamente en unos minutos.",
+      });
+    }
 
     setIsSubmitting(false);
   };

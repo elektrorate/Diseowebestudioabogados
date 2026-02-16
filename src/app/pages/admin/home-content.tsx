@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -12,6 +12,7 @@ import {
   saveHomeContent,
 } from "../../data/home-content";
 import { toast } from "sonner";
+import { CONTENT_UPDATED_EVENT } from "../../data/content-store";
 
 function parseLines(value: string) {
   return value
@@ -22,6 +23,18 @@ function parseLines(value: string) {
 
 export function AdminHomeContent() {
   const [content, setContent] = useState<HomeContent>(getHomeContent());
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const syncContent = () => setContent(getHomeContent());
+    syncContent();
+    window.addEventListener("storage", syncContent);
+    window.addEventListener(CONTENT_UPDATED_EVENT, syncContent);
+    return () => {
+      window.removeEventListener("storage", syncContent);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, syncContent);
+    };
+  }, []);
 
   const servicesText = useMemo(
     () =>
@@ -74,15 +87,29 @@ export function AdminHomeContent() {
     }));
   };
 
-  const handleSave = () => {
-    saveHomeContent(content);
-    toast.success("Contenido de Inicio actualizado");
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await saveHomeContent(content);
+      toast.success("Contenido de Inicio actualizado");
+    } catch {
+      toast.error("No se pudo guardar el contenido de Inicio");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleReset = () => {
-    resetHomeContent();
-    setContent(defaultHomeContent);
-    toast.success("Contenido de Inicio restaurado a valores por defecto");
+  const handleReset = async () => {
+    setIsSaving(true);
+    try {
+      await resetHomeContent();
+      setContent(defaultHomeContent);
+      toast.success("Contenido de Inicio restaurado a valores por defecto");
+    } catch {
+      toast.error("No se pudo restaurar el contenido de Inicio");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -94,11 +121,11 @@ export function AdminHomeContent() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleReset}>
+          <Button variant="outline" onClick={() => void handleReset()} disabled={isSaving}>
             Restaurar por defecto
           </Button>
-          <Button className="bg-accent text-accent-foreground hover:bg-accent/90" onClick={handleSave}>
-            Guardar cambios
+          <Button className="bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => void handleSave()} disabled={isSaving}>
+            {isSaving ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>
       </div>

@@ -164,10 +164,10 @@ export function getProcesosEstadoContent(): ProcesosEstadoContent {
   return loadContent(PROCESOS_CONTENT_STORAGE_KEY, defaultProcesosEstadoContent);
 }
 
-export function saveProcesosEstadoContent(content: ProcesosEstadoContent) {
-  saveContent(PROCESOS_CONTENT_STORAGE_KEY, content);
+export async function saveProcesosEstadoContent(content: ProcesosEstadoContent): Promise<void> {
+  await saveContent(PROCESOS_CONTENT_STORAGE_KEY, content);
 }
 
-export function resetProcesosEstadoContent() {
-  resetContent(PROCESOS_CONTENT_STORAGE_KEY);
+export async function resetProcesosEstadoContent(): Promise<void> {
+  await resetContent(PROCESOS_CONTENT_STORAGE_KEY);
 }

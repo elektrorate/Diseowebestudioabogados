@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -12,6 +12,7 @@ import {
   saveNosotrosContent,
 } from "../../data/nosotros-content";
 import { toast } from "sonner";
+import { CONTENT_UPDATED_EVENT } from "../../data/content-store";
 
 function parseLines(value: string) {
   return value
@@ -22,6 +23,18 @@ function parseLines(value: string) {
 
 export function AdminNosotrosContent() {
   const [content, setContent] = useState<NosotrosContent>(getNosotrosContent());
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setContent(getNosotrosContent());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   const quienesSomosText = useMemo(() => content.quienesSomos.paragraphs.join("\n"), [content.quienesSomos.paragraphs]);
   const valoresText = useMemo(
@@ -39,15 +52,29 @@ export function AdminNosotrosContent() {
     }));
   };
 
-  const save = () => {
-    saveNosotrosContent(content);
-    toast.success("Contenido de Nosotros actualizado");
+  const save = async () => {
+    setIsSaving(true);
+    try {
+      await saveNosotrosContent(content);
+      toast.success("Contenido de Nosotros actualizado");
+    } catch {
+      toast.error("No se pudo guardar el contenido de Nosotros");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const reset = () => {
-    resetNosotrosContent();
-    setContent(defaultNosotrosContent);
-    toast.success("Contenido de Nosotros restaurado");
+  const reset = async () => {
+    setIsSaving(true);
+    try {
+      await resetNosotrosContent();
+      setContent(defaultNosotrosContent);
+      toast.success("Contenido de Nosotros restaurado");
+    } catch {
+      toast.error("No se pudo restaurar el contenido de Nosotros");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -58,8 +85,8 @@ export function AdminNosotrosContent() {
           <p className="text-muted-foreground">Edita secciones de la pagina Nosotros por categorias.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={reset}>Restaurar por defecto</Button>
-          <Button onClick={save} className="bg-accent text-accent-foreground hover:bg-accent/90">Guardar cambios</Button>
+          <Button variant="outline" onClick={() => void reset()} disabled={isSaving}>Restaurar por defecto</Button>
+          <Button onClick={() => void save()} disabled={isSaving} className="bg-accent text-accent-foreground hover:bg-accent/90">{isSaving ? "Guardando..." : "Guardar cambios"}</Button>
         </div>
       </div>
 

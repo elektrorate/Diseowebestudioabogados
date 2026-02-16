@@ -92,10 +92,10 @@ export function getNosotrosContent(): NosotrosContent {
   return loadContent(NOSOTROS_CONTENT_STORAGE_KEY, defaultNosotrosContent);
 }
 
-export function saveNosotrosContent(content: NosotrosContent) {
-  saveContent(NOSOTROS_CONTENT_STORAGE_KEY, content);
+export async function saveNosotrosContent(content: NosotrosContent): Promise<void> {
+  await saveContent(NOSOTROS_CONTENT_STORAGE_KEY, content);
 }
 
-export function resetNosotrosContent() {
-  resetContent(NOSOTROS_CONTENT_STORAGE_KEY);
+export async function resetNosotrosContent(): Promise<void> {
+  await resetContent(NOSOTROS_CONTENT_STORAGE_KEY);
 }

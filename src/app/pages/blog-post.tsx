@@ -1,11 +1,27 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Calendar, Clock, Tag, ArrowLeft } from "lucide-react";
-import { blogPosts } from "../data/blog";
+import { BlogPost } from "../data/blog";
+import { getBlogPosts } from "../data/blog-store";
+import { CONTENT_UPDATED_EVENT } from "../data/content-store";
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const sync = () => setPosts(getBlogPosts());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
+
+  const post = posts.find((p) => p.slug === slug);
 
   if (!post) {
     return (
@@ -115,7 +131,7 @@ export function BlogPostPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl mb-8">Más artículos</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {blogPosts
+            {posts
               .filter((p) => p.id !== post.id && p.published)
               .slice(0, 3)
               .map((relatedPost) => (

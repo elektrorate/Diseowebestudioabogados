@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -12,6 +12,7 @@ import {
   saveProcesosEstadoContent,
 } from "../../data/procesos-content";
 import { toast } from "sonner";
+import { CONTENT_UPDATED_EVENT } from "../../data/content-store";
 
 function parseLines(value: string) {
   return value.split("\n").map((line) => line.trim()).filter(Boolean);
@@ -19,6 +20,18 @@ function parseLines(value: string) {
 
 export function AdminProcesosEstadoContent() {
   const [content, setContent] = useState<ProcesosEstadoContent>(getProcesosEstadoContent());
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setContent(getProcesosEstadoContent());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   const queEsText = useMemo(() => content.queEs.paragraphs.join("\n"), [content.queEs.paragraphs]);
   const casosText = useMemo(
@@ -38,15 +51,29 @@ export function AdminProcesosEstadoContent() {
     setContent((prev) => ({ ...prev, [section]: { ...prev[section], [key]: value } }));
   };
 
-  const save = () => {
-    saveProcesosEstadoContent(content);
-    toast.success("Contenido de Procesos actualizado");
+  const save = async () => {
+    setIsSaving(true);
+    try {
+      await saveProcesosEstadoContent(content);
+      toast.success("Contenido de Procesos actualizado");
+    } catch {
+      toast.error("No se pudo guardar el contenido de Procesos");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const reset = () => {
-    resetProcesosEstadoContent();
-    setContent(defaultProcesosEstadoContent);
-    toast.success("Contenido de Procesos restaurado");
+  const reset = async () => {
+    setIsSaving(true);
+    try {
+      await resetProcesosEstadoContent();
+      setContent(defaultProcesosEstadoContent);
+      toast.success("Contenido de Procesos restaurado");
+    } catch {
+      toast.error("No se pudo restaurar el contenido de Procesos");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -57,8 +84,8 @@ export function AdminProcesosEstadoContent() {
           <p className="text-muted-foreground">Edita el contenido por categorias y secciones.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={reset}>Restaurar por defecto</Button>
-          <Button onClick={save} className="bg-accent text-accent-foreground hover:bg-accent/90">Guardar cambios</Button>
+          <Button variant="outline" onClick={() => void reset()} disabled={isSaving}>Restaurar por defecto</Button>
+          <Button onClick={() => void save()} disabled={isSaving} className="bg-accent text-accent-foreground hover:bg-accent/90">{isSaving ? "Guardando..." : "Guardar cambios"}</Button>
         </div>
       </div>
 

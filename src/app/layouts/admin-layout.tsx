@@ -14,21 +14,25 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
+import { isAdminAuthenticated, signOutAdmin } from "../data/admin-auth";
 
 export function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("onlex_admin_auth");
-    if (!isAuthenticated) {
-      navigate("/admin/acceso");
-    }
+    let mounted = true;
+    void isAdminAuthenticated().then((ok) => {
+      if (!mounted) return;
+      if (!ok) navigate("/admin/acceso");
+    });
+    return () => {
+      mounted = false;
+    };
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("onlex_admin_auth");
-    localStorage.removeItem("onlex_admin_user");
+  const handleLogout = async () => {
+    await signOutAdmin();
     toast.success("Sesion cerrada");
     navigate("/admin/acceso");
   };

@@ -103,10 +103,10 @@ export function getEspecialidadesContent(): EspecialidadesContent {
   return loadContent(ESPECIALIDADES_CONTENT_STORAGE_KEY, defaultEspecialidadesContent);
 }
 
-export function saveEspecialidadesContent(content: EspecialidadesContent) {
-  saveContent(ESPECIALIDADES_CONTENT_STORAGE_KEY, content);
+export async function saveEspecialidadesContent(content: EspecialidadesContent): Promise<void> {
+  await saveContent(ESPECIALIDADES_CONTENT_STORAGE_KEY, content);
 }
 
-export function resetEspecialidadesContent() {
-  resetContent(ESPECIALIDADES_CONTENT_STORAGE_KEY);
+export async function resetEspecialidadesContent(): Promise<void> {
+  await resetContent(ESPECIALIDADES_CONTENT_STORAGE_KEY);
 }

@@ -6,6 +6,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { toast } from "sonner";
 import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
+import { signInAdmin } from "../../data/admin-auth";
 
 export function AdminAccess() {
   const [credentials, setCredentials] = useState({ usuario: "", clave: "" });
@@ -16,15 +17,12 @@ export function AdminAccess() {
     e.preventDefault();
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 700));
-
-    if (credentials.usuario === "admin" && credentials.clave === "testing123") {
-      localStorage.setItem("onlex_admin_auth", "true");
-      localStorage.setItem("onlex_admin_user", "admin");
+    const result = await signInAdmin(credentials.usuario, credentials.clave);
+    if (result.ok) {
       toast.success("Acceso concedido");
       navigate("/admin");
     } else {
-      toast.error("Credenciales incorrectas");
+      toast.error(result.message || "Credenciales incorrectas");
     }
 
     setIsLoading(false);

@@ -1,3 +1,5 @@
+import { loadContent, resetContent, saveContent } from "./content-store";
+
 export interface HomeArea {
   slug: string;
   title: string;
@@ -202,11 +204,10 @@ export function getHomeContent(): HomeContent {
   return loadContent(HOME_CONTENT_STORAGE_KEY, defaultHomeContent);
 }
 
-export function saveHomeContent(content: HomeContent) {
-  saveContent(HOME_CONTENT_STORAGE_KEY, content);
+export async function saveHomeContent(content: HomeContent): Promise<void> {
+  await saveContent(HOME_CONTENT_STORAGE_KEY, content);
 }
 
-export function resetHomeContent() {
-  resetContent(HOME_CONTENT_STORAGE_KEY);
+export async function resetHomeContent(): Promise<void> {
+  await resetContent(HOME_CONTENT_STORAGE_KEY);
 }
-import { loadContent, resetContent, saveContent } from "./content-store";

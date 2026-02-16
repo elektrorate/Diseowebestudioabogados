@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -12,6 +12,7 @@ import {
   saveEspecialidadesContent,
 } from "../../data/especialidades-content";
 import { toast } from "sonner";
+import { CONTENT_UPDATED_EVENT } from "../../data/content-store";
 
 function parseLines(value: string) {
   return value.split("\n").map((line) => line.trim()).filter(Boolean);
@@ -19,6 +20,18 @@ function parseLines(value: string) {
 
 export function AdminEspecialidadesContent() {
   const [content, setContent] = useState<EspecialidadesContent>(getEspecialidadesContent());
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setContent(getEspecialidadesContent());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   const areasText = useMemo(
     () => content.areas.map((item) => `${item.slug}|${item.title}|${item.description}`).join("\n"),
@@ -29,15 +42,29 @@ export function AdminEspecialidadesContent() {
     setContent((prev) => ({ ...prev, [section]: { ...prev[section], [key]: value } }));
   };
 
-  const save = () => {
-    saveEspecialidadesContent(content);
-    toast.success("Contenido de Especialidades actualizado");
+  const save = async () => {
+    setIsSaving(true);
+    try {
+      await saveEspecialidadesContent(content);
+      toast.success("Contenido de Especialidades actualizado");
+    } catch {
+      toast.error("No se pudo guardar el contenido de Especialidades");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const reset = () => {
-    resetEspecialidadesContent();
-    setContent(defaultEspecialidadesContent);
-    toast.success("Contenido de Especialidades restaurado");
+  const reset = async () => {
+    setIsSaving(true);
+    try {
+      await resetEspecialidadesContent();
+      setContent(defaultEspecialidadesContent);
+      toast.success("Contenido de Especialidades restaurado");
+    } catch {
+      toast.error("No se pudo restaurar el contenido de Especialidades");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -48,8 +75,8 @@ export function AdminEspecialidadesContent() {
           <p className="text-muted-foreground">Gestiona contenido por secciones de la pagina Especialidades.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={reset}>Restaurar por defecto</Button>
-          <Button onClick={save} className="bg-accent text-accent-foreground hover:bg-accent/90">Guardar cambios</Button>
+          <Button variant="outline" onClick={() => void reset()} disabled={isSaving}>Restaurar por defecto</Button>
+          <Button onClick={() => void save()} disabled={isSaving} className="bg-accent text-accent-foreground hover:bg-accent/90">{isSaving ? "Guardando..." : "Guardar cambios"}</Button>
         </div>
       </div>
 

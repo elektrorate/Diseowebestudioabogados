@@ -94,10 +94,10 @@ export function getContactoContent(): ContactoContent {
   return loadContent(CONTACTO_CONTENT_STORAGE_KEY, defaultContactoContent);
 }
 
-export function saveContactoContent(content: ContactoContent) {
-  saveContent(CONTACTO_CONTENT_STORAGE_KEY, content);
+export async function saveContactoContent(content: ContactoContent): Promise<void> {
+  await saveContent(CONTACTO_CONTENT_STORAGE_KEY, content);
 }
 
-export function resetContactoContent() {
-  resetContent(CONTACTO_CONTENT_STORAGE_KEY);
+export async function resetContactoContent(): Promise<void> {
+  await resetContent(CONTACTO_CONTENT_STORAGE_KEY);
 }
