@@ -3,10 +3,26 @@ import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { especialidades } from "../data/especialidades";
+import heroLaboral from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.webp";
+import heroPrevisional from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
+import heroAdministrativo from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.webp";
+import heroMunicipal from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.webp";
+
+const especialidadHeroImages: Record<string, string> = {
+  laboral: heroLaboral,
+  previsional: heroPrevisional,
+  administrativo: heroAdministrativo,
+  municipal: heroMunicipal,
+  registral: heroAdministrativo,
+  civil: heroLaboral,
+  familia: heroPrevisional,
+  sucesiones: heroMunicipal,
+};
 
 export function EspecialidadDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const especialidad = especialidades.find((e) => e.slug === slug);
+  const heroImage = slug ? especialidadHeroImages[slug] ?? heroAdministrativo : heroAdministrativo;
 
   if (!especialidad) {
     return (
@@ -24,8 +40,16 @@ export function EspecialidadDetailPage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="bg-gradient-to-r from-primary to-secondary text-white py-20">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden py-20 text-white">
+        <img
+          src={heroImage}
+          alt={especialidad.title}
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+          loading="eager"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/90 to-secondary/90" />
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl sm:text-5xl mb-6">{especialidad.title}</h1>
           <p className="text-xl text-white/90">{especialidad.description}</p>
         </div>
