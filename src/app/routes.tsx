@@ -1,68 +1,69 @@
 import { createBrowserRouter } from "react-router";
 
+const CHUNK_RELOAD_KEY = "onlex_chunk_reload_once";
+
+function isChunkLoadError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  return /Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk/i.test(
+    error.message,
+  );
+}
+
+async function loadRoute<T extends Record<string, unknown>>(
+  importer: () => Promise<T>,
+  componentKey: keyof T,
+) {
+  try {
+    const mod = await importer();
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+    return { Component: mod[componentKey] as never };
+  } catch (error) {
+    if (isChunkLoadError(error) && !sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+      sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
+      window.location.reload();
+      return { Component: (() => null) as never };
+    }
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+    throw error;
+  }
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    lazy: async () => {
-      const mod = await import("./layouts/root-layout");
-      return { Component: mod.RootLayout };
-    },
+    lazy: () => loadRoute(() => import("./layouts/root-layout"), "RootLayout"),
     children: [
       {
         index: true,
-        lazy: async () => {
-          const mod = await import("./pages/home");
-          return { Component: mod.HomePage };
-        },
+        lazy: () => loadRoute(() => import("./pages/home"), "HomePage"),
       },
       {
         path: "nosotros",
-        lazy: async () => {
-          const mod = await import("./pages/nosotros");
-          return { Component: mod.NosotrosPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/nosotros"), "NosotrosPage"),
       },
       {
         path: "especialidades",
-        lazy: async () => {
-          const mod = await import("./pages/especialidades");
-          return { Component: mod.EspecialidadesPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/especialidades"), "EspecialidadesPage"),
       },
       {
         path: "especialidades/:slug",
-        lazy: async () => {
-          const mod = await import("./pages/especialidad-detail");
-          return { Component: mod.EspecialidadDetailPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/especialidad-detail"), "EspecialidadDetailPage"),
       },
       {
         path: "procesos-estado",
-        lazy: async () => {
-          const mod = await import("./pages/procesos-estado");
-          return { Component: mod.ProcesosEstadoPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/procesos-estado"), "ProcesosEstadoPage"),
       },
       {
         path: "blog",
-        lazy: async () => {
-          const mod = await import("./pages/blog");
-          return { Component: mod.BlogPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/blog"), "BlogPage"),
       },
       {
         path: "blog/:slug",
-        lazy: async () => {
-          const mod = await import("./pages/blog-post");
-          return { Component: mod.BlogPostPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/blog-post"), "BlogPostPage"),
       },
       {
         path: "contacto",
-        lazy: async () => {
-          const mod = await import("./pages/contacto");
-          return { Component: mod.ContactoPage };
-        },
+        lazy: () => loadRoute(() => import("./pages/contacto"), "ContactoPage"),
       },
     ],
   },
@@ -71,94 +72,56 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "acceso",
-        lazy: async () => {
-          const mod = await import("./pages/admin/access");
-          return { Component: mod.AdminAccess };
-        },
+        lazy: () => loadRoute(() => import("./pages/admin/access"), "AdminAccess"),
       },
       {
         path: "login",
-        lazy: async () => {
-          const mod = await import("./pages/admin/login");
-          return { Component: mod.AdminLogin };
-        },
+        lazy: () => loadRoute(() => import("./pages/admin/login"), "AdminLogin"),
       },
       {
         path: "",
-        lazy: async () => {
-          const mod = await import("./layouts/admin-layout");
-          return { Component: mod.AdminLayout };
-        },
+        lazy: () => loadRoute(() => import("./layouts/admin-layout"), "AdminLayout"),
         children: [
           {
             index: true,
-            lazy: async () => {
-              const mod = await import("./pages/admin/dashboard");
-              return { Component: mod.AdminDashboard };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/dashboard"), "AdminDashboard"),
           },
           {
             path: "consultas",
-            lazy: async () => {
-              const mod = await import("./pages/admin/consultas");
-              return { Component: mod.AdminConsultas };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/consultas"), "AdminConsultas"),
           },
           {
             path: "inicio",
-            lazy: async () => {
-              const mod = await import("./pages/admin/home-content");
-              return { Component: mod.AdminHomeContent };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/home-content"), "AdminHomeContent"),
           },
           {
             path: "nosotros",
-            lazy: async () => {
-              const mod = await import("./pages/admin/nosotros-content");
-              return { Component: mod.AdminNosotrosContent };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/nosotros-content"), "AdminNosotrosContent"),
           },
           {
             path: "especialidades",
-            lazy: async () => {
-              const mod = await import("./pages/admin/especialidades-content");
-              return { Component: mod.AdminEspecialidadesContent };
-            },
+            lazy: () =>
+              loadRoute(() => import("./pages/admin/especialidades-content"), "AdminEspecialidadesContent"),
           },
           {
             path: "procesos-estado",
-            lazy: async () => {
-              const mod = await import("./pages/admin/procesos-content");
-              return { Component: mod.AdminProcesosEstadoContent };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/procesos-content"), "AdminProcesosEstadoContent"),
           },
           {
             path: "contacto",
-            lazy: async () => {
-              const mod = await import("./pages/admin/contacto-content");
-              return { Component: mod.AdminContactoContent };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/contacto-content"), "AdminContactoContent"),
           },
           {
             path: "blog",
-            lazy: async () => {
-              const mod = await import("./pages/admin/blog");
-              return { Component: mod.AdminBlog };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/blog"), "AdminBlog"),
           },
           {
             path: "blog/nuevo",
-            lazy: async () => {
-              const mod = await import("./pages/admin/blog-editor");
-              return { Component: mod.AdminBlogEditor };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/blog-editor"), "AdminBlogEditor"),
           },
           {
             path: "blog/editar/:id",
-            lazy: async () => {
-              const mod = await import("./pages/admin/blog-editor");
-              return { Component: mod.AdminBlogEditor };
-            },
+            lazy: () => loadRoute(() => import("./pages/admin/blog-editor"), "AdminBlogEditor"),
           },
         ],
       },
@@ -166,9 +129,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    lazy: async () => {
-      const mod = await import("./pages/not-found");
-      return { Component: mod.NotFoundPage };
-    },
+    lazy: () => loadRoute(() => import("./pages/not-found"), "NotFoundPage"),
   },
 ]);
