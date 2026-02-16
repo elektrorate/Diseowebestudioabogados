@@ -44,7 +44,7 @@ export function EspecialidadDetailPage() {
         <img
           src={heroImage}
           alt={especialidad.title}
-          className="absolute inset-0 h-full w-full object-cover opacity-[0.35]"
+          className="absolute inset-0 h-full w-full object-cover opacity-50"
           loading="eager"
           decoding="async"
         />
