@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
-import { Button } from "./ui/button";
 import logoOnlex from "@/assets/1809b5c0508c9087f0b49b5bf7f988601290c9a8.png";
 
 export function Header() {
@@ -48,6 +47,7 @@ export function Header() {
                 src={logoOnlex}
                 alt="ONLEX - Tu solucion legal en linea"
                 className="h-[66px] w-auto"
+                style={{ filter: "brightness(0) saturate(100%) invert(23%) sepia(37%) saturate(1017%) hue-rotate(354deg) brightness(95%) contrast(91%)" }}
                 decoding="async"
                 fetchPriority="high"
               />
@@ -101,13 +101,14 @@ export function Header() {
                   src={logoOnlex}
                   alt="ONLEX"
                   className="h-12 w-auto"
+                  style={{ filter: "brightness(0) saturate(100%) invert(23%) sepia(37%) saturate(1017%) hue-rotate(354deg) brightness(95%) contrast(91%)" }}
                   decoding="async"
                   fetchPriority="high"
                 />
               </Link>
             </div>
 
-            <div className="hidden flex-1 lg:flex lg:items-center lg:gap-1">
+            <div className="hidden lg:absolute lg:left-1/2 lg:flex lg:-translate-x-1/2 lg:items-center lg:gap-1">
               {navigation.map((item) => (
                 <div
                   key={item.name}
@@ -117,7 +118,7 @@ export function Header() {
                 >
                   <Link
                     to={item.href}
-                    className={`relative flex items-center gap-1 px-4 py-7 text-[15px] font-medium uppercase tracking-[0.08em] transition-colors ${
+                    className={`relative flex items-center justify-center gap-1 px-4 py-7 text-center text-[15px] font-medium uppercase tracking-[0.08em] transition-colors ${
                       isActive(item.href)
                         ? "text-accent"
                         : "text-foreground/75 hover:text-accent"
@@ -152,13 +153,6 @@ export function Header() {
             </div>
 
             <div className="hidden lg:flex lg:items-center lg:gap-4">
-              <Button
-                asChild
-                className="h-[60px] min-w-[226px] rounded-none bg-accent px-8 text-[13px] font-semibold uppercase tracking-[0.09em] text-accent-foreground hover:bg-accent/90"
-              >
-                <Link to="/contacto#consulta">Consulta Gratuita</Link>
-              </Button>
-
               <button className="p-2 text-foreground/70 transition-colors hover:text-accent" aria-label="Abrir menu secundario">
                 <Menu className="h-7 w-7" />
               </button>
@@ -225,13 +219,6 @@ export function Header() {
                   </div>
                 ))}
 
-                <div className="px-3 pt-4">
-                  <Button asChild className="w-full bg-accent hover:bg-accent/90">
-                    <Link to="/contacto#consulta" onClick={() => setIsMenuOpen(false)}>
-                      Consulta Gratuita
-                    </Link>
-                  </Button>
-                </div>
               </div>
             </div>
           )}

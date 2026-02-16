@@ -79,10 +79,14 @@ export function HomePage() {
 
               <h1 className="text-5xl leading-[1.1] font-normal sm:text-6xl lg:text-7xl">
                 <span className="text-white">{content.hero.titleLine1} </span>
-                <span className="text-accent italic">{content.hero.titleAccent1}</span>
+                <span className="italic" style={{ color: "#d6b416" }}>
+                  {content.hero.titleAccent1}
+                </span>
                 <br />
                 <span className="text-white">{content.hero.titleLine2} </span>
-                <span className="text-accent italic">{content.hero.titleAccent2}</span>
+                <span className="italic" style={{ color: "#d6b416" }}>
+                  {content.hero.titleAccent2}
+                </span>
                 <br />
                 <span className="text-white">{content.hero.titleLine3}</span>
               </h1>
