@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
-import logoOnlex from "@/assets/1809b5c0508c9087f0b49b5bf7f988601290c9a8.png";
+import logoOnlex from "@/assets/onlex-logo-brown.png";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,7 +47,6 @@ export function Header() {
                 src={logoOnlex}
                 alt="ONLEX - Tu solucion legal en linea"
                 className="h-[66px] w-auto"
-                style={{ filter: "brightness(0) saturate(100%) invert(23%) sepia(37%) saturate(1017%) hue-rotate(354deg) brightness(95%) contrast(91%)" }}
                 decoding="async"
                 fetchPriority="high"
               />
@@ -101,7 +100,6 @@ export function Header() {
                   src={logoOnlex}
                   alt="ONLEX"
                   className="h-12 w-auto"
-                  style={{ filter: "brightness(0) saturate(100%) invert(23%) sepia(37%) saturate(1017%) hue-rotate(354deg) brightness(95%) contrast(91%)" }}
                   decoding="async"
                   fetchPriority="high"
                 />
