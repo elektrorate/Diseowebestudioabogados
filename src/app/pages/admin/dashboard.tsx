@@ -5,9 +5,10 @@ import { Button } from "../../components/ui/button";
 import {
   MessageSquare,
   FileText,
-  LayoutDashboard,
-  Settings,
-  Globe,
+  House,
+  Users,
+  Briefcase,
+  Scale,
   Phone,
 } from "lucide-react";
 
@@ -21,39 +22,46 @@ export function AdminDashboard() {
       action: { label: "Gestionar consultas", href: "/admin/consultas" },
     },
     {
+      title: "Inicio",
+      description: "Administrar secciones de Home: hero, bloques de servicios, procesos y CTA final.",
+      icon: House,
+      status: "Activo",
+      action: { label: "Gestionar inicio", href: "/admin/inicio" },
+    },
+    {
+      title: "Nosotros",
+      description: "Editar contenido institucional, mision/vision, valores y CTA de la pagina Nosotros.",
+      icon: Users,
+      status: "Activo",
+      action: { label: "Gestionar nosotros", href: "/admin/nosotros" },
+    },
+    {
+      title: "Especialidades",
+      description: "Gestionar hero, cards de especialidades, proceso de trabajo y CTA.",
+      icon: Briefcase,
+      status: "Activo",
+      action: { label: "Gestionar especialidades", href: "/admin/especialidades" },
+    },
+    {
+      title: "Procesos vs Estado",
+      description: "Editar bloques de contenido, casos frecuentes, razones e informacion adicional.",
+      icon: Scale,
+      status: "Activo",
+      action: { label: "Gestionar procesos", href: "/admin/procesos-estado" },
+    },
+    {
+      title: "Contacto",
+      description: "Administrar hero, formulario y tarjetas de informacion de contacto.",
+      icon: Phone,
+      status: "Activo",
+      action: { label: "Gestionar contacto", href: "/admin/contacto" },
+    },
+    {
       title: "Contenido del blog",
       description: "Crear, editar y publicar articulos de La Gaceta del Jubilado.",
       icon: FileText,
       status: "Activo",
       action: { label: "Gestionar blog", href: "/admin/blog" },
-    },
-    {
-      title: "Contenido institucional",
-      description: "Actualizar secciones de Home, Nosotros y Especialidades.",
-      icon: Globe,
-      status: "Activo",
-      action: { label: "Gestionar inicio", href: "/admin/inicio" },
-    },
-    {
-      title: "Navegacion y menus",
-      description: "Administrar enlaces del header, footer y accesos rapidos.",
-      icon: LayoutDashboard,
-      status: "Proximamente",
-      action: null,
-    },
-    {
-      title: "Canales de contacto",
-      description: "Gestionar telefonos, correos y datos visibles del estudio.",
-      icon: Phone,
-      status: "Proximamente",
-      action: null,
-    },
-    {
-      title: "Configuracion general",
-      description: "Preferencias de sistema y parametros administrativos.",
-      icon: Settings,
-      status: "Proximamente",
-      action: null,
     },
   ];
 

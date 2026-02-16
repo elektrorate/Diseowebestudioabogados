@@ -1,6 +1,16 @@
 import { useEffect } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router";
-import { LayoutDashboard, MessageSquare, FileText, House, LogOut } from "lucide-react";
+import {
+  LayoutDashboard,
+  MessageSquare,
+  FileText,
+  House,
+  Users,
+  Briefcase,
+  Scale,
+  Phone,
+  LogOut,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import logoOnlex from "@/assets/08486880406d58026342a3b0d089b6479280a8ee.png";
@@ -26,6 +36,10 @@ export function AdminLayout() {
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Inicio", href: "/admin/inicio", icon: House },
+    { name: "Nosotros", href: "/admin/nosotros", icon: Users },
+    { name: "Especialidades", href: "/admin/especialidades", icon: Briefcase },
+    { name: "Procesos Estado", href: "/admin/procesos-estado", icon: Scale },
+    { name: "Contacto", href: "/admin/contacto", icon: Phone },
     { name: "Consultas", href: "/admin/consultas", icon: MessageSquare },
     { name: "Blog", href: "/admin/blog", icon: FileText },
   ];

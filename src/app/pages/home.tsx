@@ -25,6 +25,7 @@ import processStateImagePng from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41d
 import gacetaImageWebp from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
 import gacetaImagePng from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
 import { defaultHomeContent, getHomeContent, HomeContent } from "../data/home-content";
+import { CONTENT_UPDATED_EVENT } from "../data/content-store";
 
 const areaIcons = {
   laboral: Briefcase,
@@ -46,10 +47,10 @@ export function HomePage() {
     const syncContent = () => setContent(getHomeContent());
     syncContent();
     window.addEventListener("storage", syncContent);
-    window.addEventListener("onlex_home_content_updated", syncContent);
+    window.addEventListener(CONTENT_UPDATED_EVENT, syncContent);
     return () => {
       window.removeEventListener("storage", syncContent);
-      window.removeEventListener("onlex_home_content_updated", syncContent);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, syncContent);
     };
   }, []);
 

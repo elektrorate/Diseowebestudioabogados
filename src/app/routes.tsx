@@ -112,6 +112,34 @@ export const router = createBrowserRouter([
             },
           },
           {
+            path: "nosotros",
+            lazy: async () => {
+              const mod = await import("./pages/admin/nosotros-content");
+              return { Component: mod.AdminNosotrosContent };
+            },
+          },
+          {
+            path: "especialidades",
+            lazy: async () => {
+              const mod = await import("./pages/admin/especialidades-content");
+              return { Component: mod.AdminEspecialidadesContent };
+            },
+          },
+          {
+            path: "procesos-estado",
+            lazy: async () => {
+              const mod = await import("./pages/admin/procesos-content");
+              return { Component: mod.AdminProcesosEstadoContent };
+            },
+          },
+          {
+            path: "contacto",
+            lazy: async () => {
+              const mod = await import("./pages/admin/contacto-content");
+              return { Component: mod.AdminContactoContent };
+            },
+          },
+          {
             path: "blog",
             lazy: async () => {
               const mod = await import("./pages/admin/blog");

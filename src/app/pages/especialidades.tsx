@@ -1,105 +1,77 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { 
-  Briefcase, 
-  Users, 
-  Building2, 
-  Home, 
-  FileText, 
-  Heart, 
+import {
+  Briefcase,
+  Users,
+  Building2,
+  Home,
+  FileText,
+  Heart,
   Landmark,
-  Scale
+  Scale,
 } from "lucide-react";
+import {
+  defaultEspecialidadesContent,
+  EspecialidadesContent,
+  getEspecialidadesContent,
+} from "../data/especialidades-content";
+import { CONTENT_UPDATED_EVENT } from "../data/content-store";
+
+const areaIcons = {
+  laboral: Briefcase,
+  previsional: Users,
+  administrativo: Building2,
+  municipal: Landmark,
+  registral: FileText,
+  civil: Scale,
+  familia: Heart,
+  sucesiones: Home,
+} as const;
+
+function getAreaIcon(slug: string) {
+  return areaIcons[slug as keyof typeof areaIcons] ?? Scale;
+}
 
 export function EspecialidadesPage() {
-  const areas = [
-    {
-      icon: Briefcase,
-      title: "Derecho Laboral",
-      description: "Defensa integral en conflictos laborales del sector público y privado. Despidos, beneficios sociales y reposición.",
-      slug: "laboral"
-    },
-    {
-      icon: Users,
-      title: "Derecho Previsional",
-      description: "Especialistas en pensiones ONP. Reconocimiento, recálculo y cobro de devengados pensionarios.",
-      slug: "previsional"
-    },
-    {
-      icon: Building2,
-      title: "Derecho Administrativo",
-      description: "Procesos contra el Estado. Nulidad de actos administrativos y contencioso-administrativo.",
-      slug: "administrativo"
-    },
-    {
-      icon: Landmark,
-      title: "Derecho Municipal",
-      description: "Defensa ante municipalidades. Multas, clausuras y procedimientos administrativos municipales.",
-      slug: "municipal"
-    },
-    {
-      icon: FileText,
-      title: "Derecho Registral",
-      description: "Procedimientos SUNARP. Inscripciones, rectificaciones y defensa de derechos registrales.",
-      slug: "registral"
-    },
-    {
-      icon: Scale,
-      title: "Derecho Civil",
-      description: "Contratos, obligaciones y responsabilidad civil. Defensa de derechos patrimoniales.",
-      slug: "civil"
-    },
-    {
-      icon: Heart,
-      title: "Derecho de Familia",
-      description: "Divorcios, alimentos, tenencia y régimen de visitas. Acompañamiento humano y profesional.",
-      slug: "familia"
-    },
-    {
-      icon: Home,
-      title: "Sucesiones",
-      description: "Testamentos, declaratoria de herederos y particiones. Planificación patrimonial integral.",
-      slug: "sucesiones"
-    }
-  ];
+  const [content, setContent] = useState<EspecialidadesContent>(defaultEspecialidadesContent);
+
+  useEffect(() => {
+    const sync = () => setContent(getEspecialidadesContent());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col">
-      {/* Hero */}
-      <section className="bg-gradient-to-r from-primary to-secondary text-white py-20">
+      <section className="bg-gradient-to-r from-primary to-secondary py-20 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-6">
-              Nuestras especialidades
-            </h1>
-            <p className="text-xl text-white/90">
-              Defendemos tus derechos con experiencia, compromiso y resultados comprobados 
-              en cada área del derecho.
-            </p>
+            <h1 className="mb-6 text-4xl sm:text-5xl lg:text-6xl">{content.hero.title}</h1>
+            <p className="text-xl text-white/90">{content.hero.description}</p>
           </div>
         </div>
       </section>
 
-      {/* Especialidades Grid */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {areas.map((area, index) => {
-              const Icon = area.icon;
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {content.areas.map((area) => {
+              const Icon = getAreaIcon(area.slug);
               return (
-                <Card 
-                  key={index} 
-                  className="p-8 hover:shadow-xl transition-all group cursor-pointer"
-                >
-                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-6 group-hover:bg-accent/10 transition-colors">
-                    <Icon className="w-7 h-7 text-primary group-hover:text-accent transition-colors" />
+                <Card key={`${area.slug}-${area.title}`} className="group cursor-pointer p-8 transition-all hover:shadow-xl">
+                  <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-accent/10">
+                    <Icon className="h-7 w-7 text-primary transition-colors group-hover:text-accent" />
                   </div>
-                  <h2 className="text-2xl mb-3">{area.title}</h2>
-                  <p className="text-muted-foreground mb-6">
-                    {area.description}
-                  </p>
-                  <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-white group-hover:border-primary">
+                  <h2 className="mb-3 text-2xl">{area.title}</h2>
+                  <p className="mb-6 text-muted-foreground">{area.description}</p>
+                  <Button asChild variant="outline" className="w-full group-hover:border-primary group-hover:bg-primary group-hover:text-white">
                     <Link to={`/especialidades/${area.slug}`}>Ver detalles</Link>
                   </Button>
                 </Card>
@@ -109,59 +81,35 @@ export function EspecialidadesPage() {
         </div>
       </section>
 
-      {/* Proceso de trabajo */}
       <section className="bg-muted py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl mb-12 text-center">
-            Cómo trabajamos contigo
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <h2 className="mb-12 text-center text-3xl sm:text-4xl">{content.proceso.title}</h2>
+          <div className="grid gap-8 md:grid-cols-3">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground mb-4 text-2xl">
-                1
-              </div>
-              <h3 className="mb-2">Evaluación</h3>
-              <p className="text-muted-foreground">
-                Analizamos tu caso de manera detallada y te explicamos las opciones legales disponibles.
-              </p>
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-accent-foreground">1</div>
+              <h3 className="mb-2">{content.proceso.step1Title}</h3>
+              <p className="text-muted-foreground">{content.proceso.step1Description}</p>
             </div>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground mb-4 text-2xl">
-                2
-              </div>
-              <h3 className="mb-2">Estrategia</h3>
-              <p className="text-muted-foreground">
-                Diseñamos una estrategia legal sólida, clara y orientada a resultados.
-              </p>
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-accent-foreground">2</div>
+              <h3 className="mb-2">{content.proceso.step2Title}</h3>
+              <p className="text-muted-foreground">{content.proceso.step2Description}</p>
             </div>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground mb-4 text-2xl">
-                3
-              </div>
-              <h3 className="mb-2">Defensa y seguimiento</h3>
-              <p className="text-muted-foreground">
-                Te acompañamos en todo el proceso hasta lograr el cumplimiento efectivo de la sentencia.
-              </p>
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent text-2xl text-accent-foreground">3</div>
+              <h3 className="mb-2">{content.proceso.step3Title}</h3>
+              <p className="text-muted-foreground">{content.proceso.step3Description}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl sm:text-4xl">
-            ¿No estás seguro de qué área legal necesitas?
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Contáctanos y te orientaremos sobre la mejor forma de defender tu caso.
-          </p>
-          <Button 
-            asChild 
-            size="lg" 
-            className="bg-accent text-accent-foreground hover:bg-accent/90"
-          >
-            <Link to="/contacto">Solicita tu consulta</Link>
+        <div className="mx-auto max-w-4xl space-y-6 px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl sm:text-4xl">{content.cta.title}</h2>
+          <p className="text-lg text-muted-foreground">{content.cta.description}</p>
+          <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Link to={content.cta.buttonHref}>{content.cta.buttonLabel}</Link>
           </Button>
         </div>
       </section>

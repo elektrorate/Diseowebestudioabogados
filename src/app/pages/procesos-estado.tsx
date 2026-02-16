@@ -1,127 +1,63 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ShieldCheck, FileCheck, Gavel, CheckCircle2 } from "lucide-react";
+import {
+  defaultProcesosEstadoContent,
+  getProcesosEstadoContent,
+  ProcesosEstadoContent,
+} from "../data/procesos-content";
+import { CONTENT_UPDATED_EVENT } from "../data/content-store";
+
+const razonIcons = [ShieldCheck, FileCheck, Gavel];
 
 export function ProcesosEstadoPage() {
-  const casos = [
-    {
-      title: "Procesos contra ONP",
-      description: "Defensa especializada en casos de pensiones denegadas, mal calculadas o devengados impagos. Representamos a jubilados y pensionistas en todas las instancias.",
-      items: [
-        "Reconocimiento de pensión de jubilación",
-        "Recálculo de pensión inicial",
-        "Cobro de devengados pensionarios",
-        "Pensión de viudez y orfandad"
-      ]
-    },
-    {
-      title: "Procesos contra entidades públicas",
-      description: "Defendemos tus derechos frente a ministerios, gobiernos regionales, locales y demás entidades del Estado.",
-      items: [
-        "Reconocimiento de derechos laborales en sector público",
-        "Nulidad de despidos arbitrarios",
-        "Pago de bonificaciones y beneficios",
-        "Cumplimiento de resoluciones administrativas"
-      ]
-    },
-    {
-      title: "Contencioso administrativo",
-      description: "Impugnación judicial de actos administrativos ilegales o arbitrarios que vulneran tus derechos.",
-      items: [
-        "Nulidad de actos administrativos",
-        "Impugnación de sanciones administrativas",
-        "Demandas de cumplimiento",
-        "Defensa en procedimientos sancionadores"
-      ]
-    },
-    {
-      title: "Ejecución de sentencias",
-      description: "Garantizamos el cumplimiento efectivo de las sentencias favorables contra el Estado.",
-      items: [
-        "Ejecución forzada de sentencias",
-        "Cobro de devengados judiciales",
-        "Medidas cautelares contra el Estado",
-        "Seguimiento hasta el pago efectivo"
-      ]
-    }
-  ];
+  const [content, setContent] = useState<ProcesosEstadoContent>(defaultProcesosEstadoContent);
 
-  const razones = [
-    {
-      icon: ShieldCheck,
-      title: "Experiencia comprobada",
-      description: "Años de experiencia defendiendo derechos frente al Estado con resultados favorables."
-    },
-    {
-      icon: FileCheck,
-      title: "Conocimiento especializado",
-      description: "Dominio de la normativa administrativa y jurisprudencia sobre procesos contra el Estado."
-    },
-    {
-      icon: Gavel,
-      title: "Defensa hasta el final",
-      description: "No solo ganamos el proceso, garantizamos el cumplimiento real de la sentencia."
-    }
-  ];
+  useEffect(() => {
+    const sync = () => setContent(getProcesosEstadoContent());
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener(CONTENT_UPDATED_EVENT, sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener(CONTENT_UPDATED_EVENT, sync);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col">
-      {/* Hero */}
-      <section className="bg-gradient-to-r from-primary to-secondary text-white py-20">
+      <section className="bg-gradient-to-r from-primary to-secondary py-20 text-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-6">
-            Defensa legal frente al Estado
-          </h1>
-          <p className="text-xl text-white/90">
-            Especialistas en procesos contra entidades públicas, ONP y gobiernos locales. 
-            Defendemos tus derechos laborales, previsionales y administrativos con 
-            experiencia y resultados comprobados.
-          </p>
+          <h1 className="mb-6 text-4xl sm:text-5xl lg:text-6xl">{content.hero.title}</h1>
+          <p className="text-xl text-white/90">{content.hero.description}</p>
         </div>
       </section>
 
-      {/* Qué es un proceso contra el Estado */}
       <section className="py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl mb-6">
-            ¿Qué es un proceso contra el Estado?
-          </h2>
-          <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
-            <p>
-              Un proceso contra el Estado es un procedimiento judicial o administrativo mediante 
-              el cual una persona defiende sus derechos frente a una entidad pública que ha 
-              vulnerado o desconocido tales derechos.
-            </p>
-            <p>
-              Estos procesos pueden ser de naturaleza laboral (como el reconocimiento de derechos 
-              de trabajadores públicos), previsional (como demandas contra la ONP por pensiones), 
-              o administrativa (como la impugnación de actos administrativos arbitrarios).
-            </p>
-            <p>
-              En ONLEX contamos con amplia experiencia en litigios contra el Estado, conocemos 
-              los procedimientos especiales que aplican y las estrategias más efectivas para 
-              lograr resultados favorables.
-            </p>
+          <h2 className="mb-6 text-3xl sm:text-4xl">{content.queEs.title}</h2>
+          <div className="prose prose-lg max-w-none space-y-4 text-muted-foreground">
+            {content.queEs.paragraphs.map((paragraph, idx) => (
+              <p key={`${idx}-${paragraph.slice(0, 20)}`}>{paragraph}</p>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Casos frecuentes */}
       <section className="bg-muted py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl mb-12 text-center">
-            Casos frecuentes que defendemos
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {casos.map((caso, index) => (
-              <Card key={index} className="p-8">
-                <h3 className="text-2xl mb-3">{caso.title}</h3>
-                <p className="text-muted-foreground mb-6">{caso.description}</p>
+          <h2 className="mb-12 text-center text-3xl sm:text-4xl">{content.casos.title}</h2>
+          <div className="grid gap-8 md:grid-cols-2">
+            {content.casos.cards.map((caso, index) => (
+              <Card key={`${caso.title}-${index}`} className="p-8">
+                <h3 className="mb-3 text-2xl">{caso.title}</h3>
+                <p className="mb-6 text-muted-foreground">{caso.description}</p>
                 <ul className="space-y-2">
                   {caso.items.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                    <li key={`${item}-${idx}`} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-accent" />
                       <span className="text-sm">{item}</span>
                     </li>
                   ))}
@@ -132,19 +68,16 @@ export function ProcesosEstadoPage() {
         </div>
       </section>
 
-      {/* Por qué defensa especializada */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl mb-12 text-center">
-            ¿Por qué necesitas defensa especializada?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {razones.map((razon, index) => {
-              const Icon = razon.icon;
+          <h2 className="mb-12 text-center text-3xl sm:text-4xl">{content.razones.title}</h2>
+          <div className="grid gap-8 md:grid-cols-3">
+            {content.razones.cards.map((razon, index) => {
+              const Icon = razonIcons[index % razonIcons.length];
               return (
-                <div key={index} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-4">
-                    <Icon className="w-8 h-8 text-accent" />
+                <div key={`${razon.title}-${index}`} className="text-center">
+                  <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
+                    <Icon className="h-8 w-8 text-accent" />
                   </div>
                   <h3 className="mb-2">{razon.title}</h3>
                   <p className="text-muted-foreground">{razon.description}</p>
@@ -153,63 +86,32 @@ export function ProcesosEstadoPage() {
             })}
           </div>
 
-          <Card className="p-8 mt-12 bg-secondary text-white">
-            <p className="text-lg text-center">
-              Los procesos contra el Estado tienen particularidades procesales y plazos especiales. 
-              Un abogado especializado conoce estas reglas y puede maximizar tus posibilidades de éxito.
-            </p>
+          <Card className="mt-12 bg-secondary p-8 text-white">
+            <p className="text-center text-lg">{content.razones.highlightText}</p>
           </Card>
         </div>
       </section>
 
-      {/* Información adicional */}
       <section className="bg-muted py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl mb-6">
-            Aspectos importantes a considerar
-          </h2>
+          <h2 className="mb-6 text-3xl sm:text-4xl">{content.adicional.title}</h2>
           <div className="space-y-6">
-            <Card className="p-6">
-              <h3 className="mb-2">Plazos especiales</h3>
-              <p className="text-muted-foreground">
-                Los procesos contra el Estado tienen plazos de prescripción y caducidad específicos. 
-                Es fundamental actuar a tiempo para no perder tus derechos.
-              </p>
-            </Card>
-            <Card className="p-6">
-              <h3 className="mb-2">Vías procedimentales</h3>
-              <p className="text-muted-foreground">
-                Existen distintas vías para reclamar frente al Estado: proceso laboral, contencioso 
-                administrativo, proceso de amparo, entre otros. Elegir la vía correcta es crucial.
-              </p>
-            </Card>
-            <Card className="p-6">
-              <h3 className="mb-2">Ejecución de sentencias</h3>
-              <p className="text-muted-foreground">
-                Ganar el proceso no es suficiente. Es necesario hacer un seguimiento riguroso para 
-                garantizar el cumplimiento efectivo de la sentencia y el pago de lo ordenado.
-              </p>
-            </Card>
+            {content.adicional.items.map((item, index) => (
+              <Card key={`${item.title}-${index}`} className="p-6">
+                <h3 className="mb-2">{item.title}</h3>
+                <p className="text-muted-foreground">{item.description}</p>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl sm:text-4xl">
-            ¿El Estado vulneró tus derechos?
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Contáctanos y evaluaremos tu caso. Te explicaremos claramente tus opciones 
-            y el camino legal para defender tus derechos.
-          </p>
-          <Button 
-            asChild 
-            size="lg" 
-            className="bg-accent text-accent-foreground hover:bg-accent/90"
-          >
-            <Link to="/contacto">Consulta tu caso ahora</Link>
+        <div className="mx-auto max-w-4xl space-y-6 px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl sm:text-4xl">{content.cta.title}</h2>
+          <p className="text-lg text-muted-foreground">{content.cta.description}</p>
+          <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Link to={content.cta.buttonHref}>{content.cta.buttonLabel}</Link>
           </Button>
         </div>
       </section>

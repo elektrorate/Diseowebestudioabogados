@@ -198,33 +198,15 @@ export const defaultHomeContent: HomeContent = {
   },
 };
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
 export function getHomeContent(): HomeContent {
-  if (typeof window === "undefined") return defaultHomeContent;
-
-  const raw = localStorage.getItem(HOME_CONTENT_STORAGE_KEY);
-  if (!raw) return defaultHomeContent;
-
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!isObject(parsed)) return defaultHomeContent;
-    return parsed as HomeContent;
-  } catch {
-    return defaultHomeContent;
-  }
+  return loadContent(HOME_CONTENT_STORAGE_KEY, defaultHomeContent);
 }
 
 export function saveHomeContent(content: HomeContent) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(HOME_CONTENT_STORAGE_KEY, JSON.stringify(content));
-  window.dispatchEvent(new Event("onlex_home_content_updated"));
+  saveContent(HOME_CONTENT_STORAGE_KEY, content);
 }
 
 export function resetHomeContent() {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(HOME_CONTENT_STORAGE_KEY);
-  window.dispatchEvent(new Event("onlex_home_content_updated"));
+  resetContent(HOME_CONTENT_STORAGE_KEY);
 }
+import { loadContent, resetContent, saveContent } from "./content-store";
