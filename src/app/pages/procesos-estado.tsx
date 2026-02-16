@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ShieldCheck, FileCheck, Gavel, CheckCircle2 } from "lucide-react";
+import heroDefensaEstado from "@/assets/defends.png";
 import {
   defaultProcesosEstadoContent,
   getProcesosEstadoContent,
@@ -28,8 +29,16 @@ export function ProcesosEstadoPage() {
 
   return (
     <div className="flex flex-col">
-      <section className="bg-gradient-to-r from-primary to-secondary py-20 text-white">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden py-24 lg:py-32 text-white">
+        <img
+          src={heroDefensaEstado}
+          alt="Defensa legal frente al Estado"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/60 to-primary/45" />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h1 className="mb-6 text-4xl sm:text-5xl lg:text-6xl">{content.hero.title}</h1>
           <p className="text-xl text-white/90">{content.hero.description}</p>
         </div>
