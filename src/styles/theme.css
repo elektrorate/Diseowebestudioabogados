@@ -2,46 +2,46 @@
 
 :root {
   /* ONLEX Corporate Colors */
-  --navy-blue: #1A3263; /* Azul marino profundo - principal */
-  --blue-gray: #547792; /* Azul grisáceo medio - secundario */
+  --navy-blue: #8B5A16; /* Marron dorado profundo - principal */
+  --blue-gray: #6A4312; /* Marron medio - secundario */
   --amber-orange: #FAB95B; /* Naranja ámbar - CTA/acentos */
   --beige-gray: #E8E2DB; /* Beige gris claro - fondos */
   
   --font-size: 16px;
   --background: #ffffff;
-  --foreground: #1A3263;
+  --foreground: #5A380F;
   --card: #ffffff;
-  --card-foreground: #1A3263;
+  --card-foreground: #5A380F;
   --popover: #ffffff;
-  --popover-foreground: #1A3263;
-  --primary: #1A3263;
+  --popover-foreground: #5A380F;
+  --primary: #8B5A16;
   --primary-foreground: #ffffff;
-  --secondary: #547792;
+  --secondary: #6A4312;
   --secondary-foreground: #ffffff;
   --muted: #E8E2DB;
-  --muted-foreground: #547792;
+  --muted-foreground: #6A4312;
   --accent: #FAB95B;
-  --accent-foreground: #1A3263;
+  --accent-foreground: #5A380F;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: rgba(26, 50, 99, 0.15);
+  --border: rgba(90, 56, 15, 0.18);
   --input: transparent;
   --input-background: #E8E2DB;
-  --switch-background: #547792;
+  --switch-background: #6A4312;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #547792;
-  --chart-1: #1A3263;
-  --chart-2: #547792;
+  --ring: #6A4312;
+  --chart-1: #8B5A16;
+  --chart-2: #6A4312;
   --chart-3: #FAB95B;
   --chart-4: #E8E2DB;
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.5rem;
-  --sidebar: #1A3263;
+  --sidebar: #6A4312;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #FAB95B;
-  --sidebar-primary-foreground: #1A3263;
-  --sidebar-accent: #547792;
+  --sidebar-primary-foreground: #5A380F;
+  --sidebar-accent: #8B5A16;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #FAB95B;

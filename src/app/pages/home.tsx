@@ -236,10 +236,10 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[#1a2e58] py-24 text-white">
+      <section className="relative overflow-hidden bg-[#6A4312] py-24 text-white">
         <div className="absolute inset-0 opacity-5">
           <div
-            className="absolute inset-0 bg-[#2b3e9f]"
+            className="absolute inset-0 bg-[#8B5A16]"
             style={{
               backgroundImage:
                 "repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)",
