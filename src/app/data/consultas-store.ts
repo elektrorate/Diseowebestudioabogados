@@ -40,6 +40,13 @@ export interface NuevaConsulta {
   mensaje: string;
 }
 
+export type ConsultaSaveMode = "remote" | "local";
+
+export interface CreateConsultaResult {
+  mode: ConsultaSaveMode;
+  reason?: "firebase_disabled" | "db_unavailable" | "remote_error";
+}
+
 const FALLBACK_STORAGE_KEY = "onlex_consultas_v1";
 
 function mapEstadoFromDb(estado: string | null | undefined): ConsultaEstado {
@@ -172,16 +179,16 @@ function mergeConsultas(remote: Consulta[], local: Consulta[]): Consulta[] {
   });
 }
 
-export async function createConsulta(payload: NuevaConsulta): Promise<void> {
+export async function createConsulta(payload: NuevaConsulta): Promise<CreateConsultaResult> {
   if (!isFirebaseEnabled) {
     prependFallback(createFallbackConsulta(payload));
-    return;
+    return { mode: "local", reason: "firebase_disabled" };
   }
 
   const db = getFirebaseDb();
   if (!db) {
     prependFallback(createFallbackConsulta(payload));
-    return;
+    return { mode: "local", reason: "db_unavailable" };
   }
 
   try {
@@ -196,9 +203,11 @@ export async function createConsulta(payload: NuevaConsulta): Promise<void> {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
+    return { mode: "remote" };
   } catch (error) {
     prependFallback(createFallbackConsulta(payload));
     console.error("createConsulta: fallback local por error remoto", error);
+    return { mode: "local", reason: "remote_error" };
   }
 }
 

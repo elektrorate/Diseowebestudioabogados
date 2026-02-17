@@ -44,10 +44,16 @@ export function ContactoPage() {
     setIsSubmitting(true);
 
     try {
-      await createConsulta(formData);
-      toast.success("Consulta enviada exitosamente", {
-        description: "Nos pondremos en contacto contigo en breve.",
-      });
+      const result = await createConsulta(formData);
+      if (result.mode === "remote") {
+        toast.success("Consulta enviada exitosamente", {
+          description: "Nos pondremos en contacto contigo en breve.",
+        });
+      } else {
+        toast.warning("Consulta guardada solo localmente", {
+          description: "No se pudo conectar con Firebase. Verifica la configuracion en Vercel.",
+        });
+      }
 
       setFormData({
         nombre: "",
