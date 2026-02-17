@@ -1,20 +1,22 @@
 # Mantenimiento y Cambios
 
 ## Cambios funcionales recientes
-- Ajuste visual del header para alinearlo al diseno de referencia.
-- Eliminacion de opcion "Nuestro Equipo" del submenu Nosotros.
-- Eliminacion de boton "Consulta tu caso" en bloque de especialidad de home.
-- CTA "Consulta Gratuita" del header apunta a `/contacto#consulta`.
-- Seccion de contacto con ancla `#consulta` y scroll controlado.
-- Enlaces del footer y layout con comportamiento consistente de scroll top.
+- Migracion de autenticacion admin a Firebase Auth con validacion de rol en `admin_profiles` (manteniendo fallback local).
+- Persistencia de consultas en Firestore (`consultas`) con gestion de estado y comentarios desde admin.
+- Persistencia de contenido editable (inicio, nosotros, especialidades, procesos, contacto y blog) en `site_content`.
+- Nuevo modulo `/admin/galeria` para administrar imagenes por seccion.
+- Optimizacion responsive de galeria con variantes `thumbnail`, `medium` y `large` en WebP.
+- Mitigacion de errores de carga lazy: recarga unica ante fallo de chunks.
+- Rewrite SPA ajustado para no interceptar archivos de assets.
 
 ## Riesgos tecnicos actuales
-- Login admin basado en `localStorage` y credenciales hardcoded.
-- Datos de blog/especialidades en memoria local (sin backend persistente).
-- Dependencia de contenido mock para flujo real de negocio.
+- La galeria aun se guarda solo en `localStorage`; no existe persistencia remota compartida.
+- Cuando Firebase no esta configurado, auth y datos se mantienen localmente por navegador.
+- No hay pruebas automatizadas de regresion para rutas, auth y CRUD admin.
+- La cuenta fallback (`admin` / `testing123`) no debe usarse en produccion sin controles adicionales.
 
 ## Proximos pasos recomendados
-1. Integrar backend para formulario de contacto.
-2. Reemplazar auth demo por proveedor real (ej. Supabase/Auth provider).
-3. Migrar blog y especialidades a fuente administrable (CMS/API).
-4. Agregar pruebas de regresion para navegacion y scroll.
+1. Persistir galeria en backend (Firestore + Storage) para compartir cambios entre dispositivos.
+2. Endurecer seguridad admin (roles multiples, auditoria y remocion de credenciales fallback en produccion).
+3. Agregar pruebas E2E para formularios, rutas criticas y panel admin.
+4. Definir monitoreo/alertas para errores de carga y fallas de escritura en Firestore.

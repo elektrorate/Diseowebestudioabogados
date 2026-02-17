@@ -10,7 +10,8 @@
 - `src/app/pages/`: paginas por ruta.
 - `src/app/components/`: componentes globales (`header`, `footer`, etc.).
 - `src/app/components/ui/`: biblioteca de componentes base.
-- `src/app/data/`: datos mock (`blog`, `especialidades`).
+- `src/app/data/`: stores de contenido, consultas, blog, auth admin y galeria.
+- `src/lib/firebase.ts`: inicializacion y helpers de Firebase.
 - `src/styles/`: estilos globales y tokens.
 - `src/assets/`: imagenes del proyecto.
 
@@ -19,9 +20,11 @@
 2. `App` monta router + toaster.
 3. Router carga layout y pagina por ruta actual.
 4. Layout aplica shell visual (header/footer o sidebar admin).
+5. Stores de datos sincronizan contenido desde `localStorage` y, si aplica, Firestore.
 
 ## Capas funcionales
 - Presentacion: paginas y componentes.
 - Navegacion: rutas lazy y layouts.
-- Datos: arrays/objetos locales en TypeScript.
+- Datos: stores con fallback local + persistencia remota condicional.
+- Infraestructura: Firebase Auth y Firestore (opcional por entorno).
 - Configuracion: Vite, Tailwind, Vercel.

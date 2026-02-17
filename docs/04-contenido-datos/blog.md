@@ -1,6 +1,8 @@
 # Datos de Blog
 
-Fuente: `src/app/data/blog.ts`
+Fuentes:
+- `src/app/data/blog.ts` (seed inicial)
+- `src/app/data/blog-store.ts` (lectura/escritura)
 
 ## Estructura del tipo `BlogPost`
 - `id: string`
@@ -15,13 +17,16 @@ Fuente: `src/app/data/blog.ts`
 - `published: boolean`
 
 ## Colecciones actuales
-- `blogPosts`: posts mock para listados y detalle.
-- `categories`: listado de categorias del blog.
+- `blogPosts` y `categories`: seed inicial de contenido.
+- `onlex_blog_posts_v1`: clave runtime de contenido editable.
+- `site_content/onlex_blog_posts_v1`: documento remoto cuando Firebase esta activo.
 
 ## Uso
 - `BlogPage`: listado y filtros.
 - `BlogPostPage`: detalle por `slug`.
-- Admin blog: vistas de gestion en modo demo.
+- Admin blog: crear, editar, eliminar y cambiar estado publicado/borrador.
+- `upsertBlogPost()` autogenera `id` correlativo y fecha por defecto en altas.
 
 ## Recomendacion
+- Mantener `slug` unico para evitar colisiones en rutas.
 - Si se migra a CMS/API, mantener contrato de campos para compatibilidad.
