@@ -112,6 +112,10 @@ export const router = createBrowserRouter([
             lazy: () => loadRoute(() => import("./pages/admin/contacto-content"), "AdminContactoContent"),
           },
           {
+            path: "galeria",
+            lazy: () => loadRoute(() => import("./pages/admin/galeria-content"), "AdminGaleriaContent"),
+          },
+          {
             path: "blog",
             lazy: () => loadRoute(() => import("./pages/admin/blog"), "AdminBlog"),
           },

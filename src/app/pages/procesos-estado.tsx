@@ -3,18 +3,25 @@ import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { ShieldCheck, FileCheck, Gavel, CheckCircle2 } from "lucide-react";
-import heroDefensaEstado from "@/assets/defends.png";
+import heroDefensaEstado from "@/assets/defends.webp";
 import {
   defaultProcesosEstadoContent,
   getProcesosEstadoContent,
   ProcesosEstadoContent,
 } from "../data/procesos-content";
 import { CONTENT_UPDATED_EVENT } from "../data/content-store";
+import { useSectionGalleryImage } from "../data/gallery-hooks";
 
 const razonIcons = [ShieldCheck, FileCheck, Gavel];
 
 export function ProcesosEstadoPage() {
   const [content, setContent] = useState<ProcesosEstadoContent>(defaultProcesosEstadoContent);
+  const heroImage = useSectionGalleryImage(
+    "procesos_hero",
+    heroDefensaEstado,
+    "Defensa legal frente al Estado",
+    "100vw",
+  );
 
   useEffect(() => {
     const sync = () => setContent(getProcesosEstadoContent());
@@ -31,8 +38,10 @@ export function ProcesosEstadoPage() {
     <div className="flex flex-col">
       <section className="relative isolate overflow-hidden py-24 lg:py-32 text-white">
         <img
-          src={heroDefensaEstado}
-          alt="Defensa legal frente al Estado"
+          src={heroImage.src}
+          srcSet={heroImage.srcSet || undefined}
+          sizes={heroImage.sizes}
+          alt={heroImage.alt}
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
           decoding="async"

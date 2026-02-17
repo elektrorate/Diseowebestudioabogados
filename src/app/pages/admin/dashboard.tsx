@@ -10,6 +10,7 @@ import {
   Briefcase,
   Scale,
   Phone,
+  Images,
 } from "lucide-react";
 
 export function AdminDashboard() {
@@ -55,6 +56,13 @@ export function AdminDashboard() {
       icon: Phone,
       status: "Activo",
       action: { label: "Gestionar contacto", href: "/admin/contacto" },
+    },
+    {
+      title: "Galeria de fotos",
+      description: "Gestionar imagenes por seccion: agregar, reemplazar, reordenar y eliminar.",
+      icon: Images,
+      status: "Activo",
+      action: { label: "Gestionar galeria", href: "/admin/galeria" },
     },
     {
       title: "Contenido del blog",

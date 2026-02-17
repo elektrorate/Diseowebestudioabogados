@@ -17,15 +17,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import heroBackgroundWebp from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.webp";
-import heroBackgroundPng from "@/assets/54e6bf754107c9c49ea97b9a5ae8cf74708efb3a.png";
 import aboutImageWebp from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.webp";
-import aboutImagePng from "@/assets/7cd1439c63657dc693a8f69ba7de1e85b57cf6fd.png";
 import processStateImageWebp from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.webp";
-import processStateImagePng from "@/assets/f17fc7e94886323543bac62dff6e2ead1d41daaf.png";
 import gacetaImageWebp from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.webp";
-import gacetaImagePng from "@/assets/151cf3ccbe09ccc69d2c481a35014b24b67ab818.png";
 import { defaultHomeContent, getHomeContent, HomeContent } from "../data/home-content";
 import { CONTENT_UPDATED_EVENT } from "../data/content-store";
+import { useSectionGalleryImage } from "../data/gallery-hooks";
 
 const areaIcons = {
   laboral: Briefcase,
@@ -42,6 +39,30 @@ function getAreaIcon(slug: string) {
 
 export function HomePage() {
   const [content, setContent] = useState<HomeContent>(defaultHomeContent);
+  const heroImage = useSectionGalleryImage(
+    "home_hero",
+    heroBackgroundWebp,
+    "Oficina profesional de abogados",
+    "100vw",
+  );
+  const aboutImage = useSectionGalleryImage(
+    "home_about",
+    aboutImageWebp,
+    "Equipo profesional de abogados",
+    "(max-width: 1024px) 100vw, 50vw",
+  );
+  const processImage = useSectionGalleryImage(
+    "home_process",
+    processStateImageWebp,
+    "Justicia y derecho",
+    "(max-width: 1024px) 100vw, 50vw",
+  );
+  const gacetaImage = useSectionGalleryImage(
+    "home_gaceta",
+    gacetaImageWebp,
+    "Adultos mayores",
+    "(max-width: 1024px) 100vw, 50vw",
+  );
 
   useEffect(() => {
     const syncContent = () => setContent(getHomeContent());
@@ -59,9 +80,10 @@ export function HomePage() {
       <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-primary text-white">
         <div className="absolute inset-0">
           <img
-            src={heroBackgroundPng}
-            srcSet={`${heroBackgroundWebp} 1x`}
-            alt="Oficina profesional de abogados"
+            src={heroImage.src}
+            srcSet={heroImage.srcSet || undefined}
+            sizes={heroImage.sizes}
+            alt={heroImage.alt}
             className="h-full w-full object-cover"
             fetchPriority="high"
             decoding="async"
@@ -135,9 +157,10 @@ export function HomePage() {
           <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative order-2 lg:order-1">
               <ImageWithFallback
-                src={aboutImagePng}
-                srcSet={`${aboutImageWebp} 1x`}
-                alt="Equipo profesional de abogados"
+                src={aboutImage.src}
+                srcSet={aboutImage.srcSet || undefined}
+                sizes={aboutImage.sizes}
+                alt={aboutImage.alt}
                 className="h-[550px] w-full object-cover"
                 loading="lazy"
                 decoding="async"
@@ -284,9 +307,10 @@ export function HomePage() {
             <div className="relative order-1 lg:order-2">
               <div className="absolute -bottom-8 -left-8 hidden h-64 w-64 border-2 border-accent/30 lg:block" />
               <ImageWithFallback
-                src={processStateImagePng}
-                srcSet={`${processStateImageWebp} 1x`}
-                alt="Justicia y derecho"
+                src={processImage.src}
+                srcSet={processImage.srcSet || undefined}
+                sizes={processImage.sizes}
+                alt={processImage.alt}
                 className="relative z-10 h-[500px] w-full object-cover"
                 loading="lazy"
                 decoding="async"
@@ -301,9 +325,10 @@ export function HomePage() {
           <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative order-2 lg:order-1">
               <ImageWithFallback
-                src={gacetaImagePng}
-                srcSet={`${gacetaImageWebp} 1x`}
-                alt="Adultos mayores"
+                src={gacetaImage.src}
+                srcSet={gacetaImage.srcSet || undefined}
+                sizes={gacetaImage.sizes}
+                alt={gacetaImage.alt}
                 className="h-[500px] w-full object-cover"
                 loading="lazy"
                 decoding="async"

@@ -9,6 +9,7 @@ import {
   Briefcase,
   Scale,
   Phone,
+  Images,
   LogOut,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -44,6 +45,7 @@ export function AdminLayout() {
     { name: "Especialidades", href: "/admin/especialidades", icon: Briefcase },
     { name: "Procesos Estado", href: "/admin/procesos-estado", icon: Scale },
     { name: "Contacto", href: "/admin/contacto", icon: Phone },
+    { name: "Galeria", href: "/admin/galeria", icon: Images },
     { name: "Consultas", href: "/admin/consultas", icon: MessageSquare },
     { name: "Blog", href: "/admin/blog", icon: FileText },
   ];
