@@ -70,38 +70,64 @@ function writeFallback(data: Consulta[]) {
   localStorage.setItem(FALLBACK_STORAGE_KEY, JSON.stringify(data));
 }
 
+function createFallbackConsulta(payload: NuevaConsulta): Consulta {
+  return {
+    id: crypto.randomUUID(),
+    nombre: payload.nombre,
+    telefono: payload.telefono,
+    email: payload.email,
+    asunto: payload.asunto,
+    mensaje: payload.mensaje,
+    fecha: new Date().toISOString(),
+    estado: "Pendiente",
+    comentarios: [],
+  };
+}
+
+function prependFallback(item: Consulta) {
+  const current = readFallback();
+  writeFallback([item, ...current]);
+}
+
+function mergeConsultas(remote: Consulta[], local: Consulta[]): Consulta[] {
+  if (local.length === 0) return remote;
+  const remoteIds = new Set(remote.map((item) => item.id));
+  const pendingLocal = local.filter((item) => !remoteIds.has(item.id));
+  return [...pendingLocal, ...remote].sort((a, b) => {
+    const aTime = Date.parse(a.fecha) || 0;
+    const bTime = Date.parse(b.fecha) || 0;
+    return bTime - aTime;
+  });
+}
+
 export async function createConsulta(payload: NuevaConsulta): Promise<void> {
   if (!isFirebaseEnabled) {
-    const current = readFallback();
-    const item: Consulta = {
-      id: crypto.randomUUID(),
-      nombre: payload.nombre,
-      telefono: payload.telefono,
-      email: payload.email,
-      asunto: payload.asunto,
-      mensaje: payload.mensaje,
-      fecha: new Date().toISOString(),
-      estado: "Pendiente",
-      comentarios: [],
-    };
-    writeFallback([item, ...current]);
+    prependFallback(createFallbackConsulta(payload));
     return;
   }
 
   const db = getFirebaseDb();
-  if (!db) return;
+  if (!db) {
+    prependFallback(createFallbackConsulta(payload));
+    return;
+  }
 
-  await addDoc(collection(db, "consultas"), {
-    nombre: payload.nombre,
-    telefono: payload.telefono,
-    email: payload.email || null,
-    asunto: payload.asunto || null,
-    mensaje: payload.mensaje,
-    estado: "pendiente",
-    comentarios: [],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, "consultas"), {
+      nombre: payload.nombre,
+      telefono: payload.telefono,
+      email: payload.email || null,
+      asunto: payload.asunto || null,
+      mensaje: payload.mensaje,
+      estado: "pendiente",
+      comentarios: [],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    prependFallback(createFallbackConsulta(payload));
+    console.error("createConsulta: fallback local por error remoto", error);
+  }
 }
 
 export async function getConsultas(): Promise<Consulta[]> {
@@ -110,48 +136,55 @@ export async function getConsultas(): Promise<Consulta[]> {
   }
 
   const db = getFirebaseDb();
-  if (!db) return [];
+  if (!db) return readFallback();
 
-  const snapshot = await getDocs(query(collection(db, "consultas"), orderBy("createdAt", "desc")));
+  try {
+    const snapshot = await getDocs(query(collection(db, "consultas"), orderBy("createdAt", "desc")));
 
-  return snapshot.docs.map((row) => {
-    const data = row.data() as {
-      nombre: string;
-      telefono: string;
-      email?: string | null;
-      asunto?: string | null;
-      mensaje: string;
-      estado?: string | null;
-      createdAt?: { toDate?: () => Date };
-      comentarios?: Array<{
-        id?: string;
-        texto?: string;
-        createdAt?: string;
-      }>;
-    };
-    const fecha = data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString();
-    const comentarios = Array.isArray(data.comentarios)
-      ? data.comentarios
-          .filter((item) => Boolean(item?.texto))
-          .map((item) => ({
-            id: item.id || crypto.randomUUID(),
-            texto: item.texto || "",
-            createdAt: item.createdAt || new Date().toISOString(),
-          }))
-      : [];
+    const remote = snapshot.docs.map((row) => {
+      const data = row.data() as {
+        nombre: string;
+        telefono: string;
+        email?: string | null;
+        asunto?: string | null;
+        mensaje: string;
+        estado?: string | null;
+        createdAt?: { toDate?: () => Date };
+        comentarios?: Array<{
+          id?: string;
+          texto?: string;
+          createdAt?: string;
+        }>;
+      };
+      const fecha = data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString();
+      const comentarios = Array.isArray(data.comentarios)
+        ? data.comentarios
+            .filter((item) => Boolean(item?.texto))
+            .map((item) => ({
+              id: item.id || crypto.randomUUID(),
+              texto: item.texto || "",
+              createdAt: item.createdAt || new Date().toISOString(),
+            }))
+        : [];
 
-    return {
-      id: row.id,
-      nombre: data.nombre,
-      telefono: data.telefono,
-      email: data.email || "",
-      asunto: data.asunto || "",
-      mensaje: data.mensaje,
-      fecha,
-      estado: mapEstadoFromDb(data.estado),
-      comentarios,
-    };
-  });
+      return {
+        id: row.id,
+        nombre: data.nombre,
+        telefono: data.telefono,
+        email: data.email || "",
+        asunto: data.asunto || "",
+        mensaje: data.mensaje,
+        fecha,
+        estado: mapEstadoFromDb(data.estado),
+        comentarios,
+      };
+    });
+
+    return mergeConsultas(remote, readFallback());
+  } catch (error) {
+    console.error("getConsultas: fallback local por error remoto", error);
+    return readFallback();
+  }
 }
 
 export async function updateConsultaEstado(id: string, estado: ConsultaEstado): Promise<void> {
@@ -162,12 +195,22 @@ export async function updateConsultaEstado(id: string, estado: ConsultaEstado): 
   }
 
   const db = getFirebaseDb();
-  if (!db) return;
+  if (!db) {
+    const current = readFallback();
+    writeFallback(current.map((item) => (item.id === id ? { ...item, estado } : item)));
+    return;
+  }
 
-  await updateDoc(doc(db, "consultas", id), {
-    estado: mapEstadoToDb(estado),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await updateDoc(doc(db, "consultas", id), {
+      estado: mapEstadoToDb(estado),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    const current = readFallback();
+    writeFallback(current.map((item) => (item.id === id ? { ...item, estado } : item)));
+    console.error("updateConsultaEstado: fallback local por error remoto", error);
+  }
 }
 
 export async function deleteConsulta(id: string): Promise<void> {
@@ -178,9 +221,19 @@ export async function deleteConsulta(id: string): Promise<void> {
   }
 
   const db = getFirebaseDb();
-  if (!db) return;
+  if (!db) {
+    const current = readFallback();
+    writeFallback(current.filter((item) => item.id !== id));
+    return;
+  }
 
-  await deleteDoc(doc(db, "consultas", id));
+  try {
+    await deleteDoc(doc(db, "consultas", id));
+  } catch (error) {
+    const current = readFallback();
+    writeFallback(current.filter((item) => item.id !== id));
+    console.error("deleteConsulta: fallback local por error remoto", error);
+  }
 }
 
 export async function addConsultaComentario(consultaId: string, texto: string): Promise<ConsultaComentario> {
@@ -203,12 +256,34 @@ export async function addConsultaComentario(consultaId: string, texto: string): 
   }
 
   const db = getFirebaseDb();
-  if (!db) return comentario;
+  if (!db) {
+    const current = readFallback();
+    writeFallback(
+      current.map((item) =>
+        item.id === consultaId
+          ? { ...item, comentarios: [...(item.comentarios || []), comentario] }
+          : item,
+      ),
+    );
+    return comentario;
+  }
 
-  await updateDoc(doc(db, "consultas", consultaId), {
-    comentarios: arrayUnion(comentario),
-    updatedAt: serverTimestamp(),
-  });
+  try {
+    await updateDoc(doc(db, "consultas", consultaId), {
+      comentarios: arrayUnion(comentario),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    const current = readFallback();
+    writeFallback(
+      current.map((item) =>
+        item.id === consultaId
+          ? { ...item, comentarios: [...(item.comentarios || []), comentario] }
+          : item,
+      ),
+    );
+    console.error("addConsultaComentario: fallback local por error remoto", error);
+  }
 
   return comentario;
 }

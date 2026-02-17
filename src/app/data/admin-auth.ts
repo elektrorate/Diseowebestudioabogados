@@ -1,6 +1,6 @@
 import { getFirebaseAuth, getFirebaseDb, isFirebaseEnabled } from "@/lib/firebase";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 
 const ADMIN_AUTH_KEY = "onlex_admin_auth";
 const ADMIN_USER_KEY = "onlex_admin_user";
@@ -28,6 +28,24 @@ function clearLocalAdminSession() {
   localStorage.removeItem(ADMIN_USER_KEY);
 }
 
+async function ensurePrimaryAdminProfile(
+  db: ReturnType<typeof getFirebaseDb>,
+  uid: string,
+  email?: string | null,
+) {
+  if (!db) return;
+  await setDoc(
+    doc(db, "admin_profiles", uid),
+    {
+      username: ADMIN_DEFAULT_USERNAME,
+      role: "admin",
+      email: email || ADMIN_DEFAULT_EMAIL,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+}
+
 export async function signInAdmin(usuario: string, clave: string): Promise<{ ok: boolean; message?: string }> {
   const username = usuario.trim().toLowerCase();
 
@@ -47,9 +65,14 @@ export async function signInAdmin(usuario: string, clave: string): Promise<{ ok:
   try {
     const credentials = await signInWithEmailAndPassword(auth, email, clave);
     const profileDoc = await getDoc(doc(db, "admin_profiles", credentials.user.uid));
-    const profile = profileDoc.exists()
+    let profile = profileDoc.exists()
       ? (profileDoc.data() as { username?: string; role?: string })
       : null;
+
+    if (isPrimaryAdminEmail(credentials.user.email) && (!profile || profile.role !== "admin")) {
+      await ensurePrimaryAdminProfile(db, credentials.user.uid, credentials.user.email);
+      profile = { ...(profile || {}), username: profile?.username || ADMIN_DEFAULT_USERNAME, role: "admin" };
+    }
 
     if ((!profile || profile.role !== "admin") && !isPrimaryAdminEmail(credentials.user.email)) {
       await signOut(auth);
@@ -94,9 +117,15 @@ export async function isAdminAuthenticated(): Promise<boolean> {
 
   try {
     const profileDoc = await getDoc(doc(db, "admin_profiles", auth.currentUser.uid));
-    const profile = profileDoc.exists()
+    let profile = profileDoc.exists()
       ? (profileDoc.data() as { username?: string; role?: string })
       : null;
+
+    if (isPrimaryAdminEmail(auth.currentUser.email) && (!profile || profile.role !== "admin")) {
+      await ensurePrimaryAdminProfile(db, auth.currentUser.uid, auth.currentUser.email);
+      profile = { ...(profile || {}), username: profile?.username || ADMIN_DEFAULT_USERNAME, role: "admin" };
+    }
+
     if ((!profile || profile.role !== "admin") && !isPrimaryAdminEmail(auth.currentUser.email)) {
       clearLocalAdminSession();
       return false;
