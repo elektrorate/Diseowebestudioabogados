@@ -54,12 +54,80 @@ function mapEstadoToDb(estado: ConsultaEstado): "pendiente" | "contactado" | "re
   return "pendiente";
 }
 
+function toSafeString(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function normalizeFallbackEstado(value: unknown): ConsultaEstado {
+  if (value === "Contactado") return "Contactado";
+  if (value === "Resuelto") return "Resuelto";
+  return "Pendiente";
+}
+
+function normalizeFallbackComentarios(value: unknown): ConsultaComentario[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const row = item as { id?: unknown; texto?: unknown; createdAt?: unknown };
+      const texto = toSafeString(row.texto).trim();
+      if (!texto) return null;
+      return {
+        id: toSafeString(row.id) || crypto.randomUUID(),
+        texto,
+        createdAt: toSafeString(row.createdAt) || new Date().toISOString(),
+      };
+    })
+    .filter((item): item is ConsultaComentario => Boolean(item));
+}
+
+function normalizeFallbackItem(value: unknown): Consulta | null {
+  if (!value || typeof value !== "object") return null;
+  const row = value as {
+    id?: unknown;
+    nombre?: unknown;
+    telefono?: unknown;
+    email?: unknown;
+    asunto?: unknown;
+    mensaje?: unknown;
+    fecha?: unknown;
+    estado?: unknown;
+    comentarios?: unknown;
+  };
+
+  const nombre = toSafeString(row.nombre).trim();
+  const telefono = toSafeString(row.telefono).trim();
+  const mensaje = toSafeString(row.mensaje).trim();
+  if (!nombre || !telefono || !mensaje) return null;
+
+  return {
+    id: toSafeString(row.id) || crypto.randomUUID(),
+    nombre,
+    telefono,
+    email: toSafeString(row.email),
+    asunto: toSafeString(row.asunto),
+    mensaje,
+    fecha: toSafeString(row.fecha) || new Date().toISOString(),
+    estado: normalizeFallbackEstado(row.estado),
+    comentarios: normalizeFallbackComentarios(row.comentarios),
+  };
+}
+
 function readFallback(): Consulta[] {
   if (typeof window === "undefined") return [];
-  const raw = localStorage.getItem(FALLBACK_STORAGE_KEY);
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem(FALLBACK_STORAGE_KEY);
+  } catch {
+    return [];
+  }
   if (!raw) return [];
   try {
-    return JSON.parse(raw) as Consulta[];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item) => normalizeFallbackItem(item))
+      .filter((item): item is Consulta => Boolean(item));
   } catch {
     return [];
   }
@@ -67,7 +135,11 @@ function readFallback(): Consulta[] {
 
 function writeFallback(data: Consulta[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(FALLBACK_STORAGE_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(FALLBACK_STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.error("writeFallback: no se pudo persistir en localStorage", error);
+  }
 }
 
 function createFallbackConsulta(payload: NuevaConsulta): Consulta {
