@@ -50,8 +50,16 @@ export function ContactoPage() {
           description: "Nos pondremos en contacto contigo en breve.",
         });
       } else {
+        const reasonLabel =
+          result.reason === "firebase_disabled"
+            ? "Faltan variables VITE_FIREBASE_* en el deploy."
+            : result.reason === "db_unavailable"
+              ? "No se pudo inicializar Firestore."
+              : result.errorCode
+                ? `Firebase devolvio: ${result.errorCode}.`
+                : "Error remoto al guardar en Firebase.";
         toast.warning("Consulta guardada solo localmente", {
-          description: "No se pudo conectar con Firebase. Verifica la configuracion en Vercel.",
+          description: `${reasonLabel} Verifica configuracion y reglas en Vercel/Firebase.`,
         });
       }
 

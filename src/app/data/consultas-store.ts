@@ -45,6 +45,7 @@ export type ConsultaSaveMode = "remote" | "local";
 export interface CreateConsultaResult {
   mode: ConsultaSaveMode;
   reason?: "firebase_disabled" | "db_unavailable" | "remote_error";
+  errorCode?: string;
 }
 
 const FALLBACK_STORAGE_KEY = "onlex_consultas_v1";
@@ -207,7 +208,11 @@ export async function createConsulta(payload: NuevaConsulta): Promise<CreateCons
   } catch (error) {
     prependFallback(createFallbackConsulta(payload));
     console.error("createConsulta: fallback local por error remoto", error);
-    return { mode: "local", reason: "remote_error" };
+    const errorCode =
+      typeof error === "object" && error !== null && "code" in error
+        ? String((error as { code?: unknown }).code || "")
+        : "";
+    return { mode: "local", reason: "remote_error", errorCode: errorCode || undefined };
   }
 }
 
